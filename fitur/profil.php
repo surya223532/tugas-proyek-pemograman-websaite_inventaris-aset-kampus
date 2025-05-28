@@ -46,49 +46,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ubah_password'])) {
     <link rel="stylesheet" href="../assets/profil.css">
 </head>
 <body>
-    <h2>Profil Saya</h2>
-    <table>
-        <tr><td>Email</td><td><?= htmlspecialchars($user['email']) ?></td></tr>
-        <tr><td>Nama</td><td><?= htmlspecialchars($user['nama']) ?></td></tr>
-        <tr><td>Role</td><td><?= htmlspecialchars($user['role']) ?></td></tr>
-    </table>
-    <?php
-    // Tentukan halaman kembali berdasarkan role
-    $role = $_SESSION['role'];
-    switch ($role) {
-        case 'staf':
-            $kembali = '../staf/staf.php';
-            break;
-        case 'admin':
-            $kembali = '../adm/admin.php';
-            break;
-        case 'pimpinan':
-            $kembali = '../pimpinan/pimpinan.php';
-            break;
-        default:
-            $kembali = '../index.php';
-    }
-    ?>
-    <a href="<?= $kembali ?>">Kembali</a>
+    <div class="profile-popup">
+        <h2>Profil Saya</h2>
+        <table>
+            <tr><td>Email</td><td><?= htmlspecialchars($user['email']) ?></td></tr>
+            <tr><td>Nama</td><td><?= htmlspecialchars($user['nama']) ?></td></tr>
+            <tr><td>Role</td><td><?= htmlspecialchars($user['role']) ?></td></tr>
+        </table>
+        <?php
+        // Tentukan halaman kembali berdasarkan role
+        $role = $_SESSION['role'];
+        switch ($role) {
+            case 'staf':
+                $kembali = '../staf/staf.php';
+                break;
+            case 'admin':
+                $kembali = '../adm/admin.php';
+                break;
+            case 'pimpinan':
+                $kembali = '../pimpinan/pimpinan.php';
+                break;
+            default:
+                $kembali = '../index.php';
+        }
+        ?>
+        <a href="<?= $kembali ?>">Kembali</a>
 
-    <h3>Ubah Password</h3>
-    <?php if ($pesan): ?>
-        <p style="color:<?= $pesan === 'Password berhasil diubah!' ? 'green' : 'red' ?>;">
-            <?= htmlspecialchars($pesan) ?>
-        </p>
-    <?php endif; ?>
-    <form method="post">
-        <input type="hidden" name="ubah_password" value="1">
-        <label>Password Lama:<br>
-            <input type="password" name="password_lama" required>
-        </label><br>
-        <label>Password Baru:<br>
-            <input type="password" name="password_baru" required>
-        </label><br>
-        <label>Konfirmasi Password Baru:<br>
-            <input type="password" name="konfirmasi" required>
-        </label><br>
-        <button type="submit">Ubah Password</button>
-    </form>
+        <h3>Ubah Password</h3>
+        <?php if ($pesan): ?>
+            <p style="color:<?= $pesan === 'Password berhasil diubah!' ? 'green' : 'red' ?>;">
+                <?= htmlspecialchars($pesan) ?>
+            </p>
+        <?php endif; ?>
+        <form method="post">
+            <input type="hidden" name="ubah_password" value="1">
+            <label>Password Lama:<br>
+                <input type="password" name="password_lama" required>
+            </label><br>
+            <label>Password Baru:<br>
+                <input type="password" name="password_baru" required>
+            </label><br>
+            <label>Konfirmasi Password Baru:<br>
+                <input type="password" name="konfirmasi" required>
+            </label><br>
+            <button type="submit">Ubah Password</button>
+        </form>
+    </div>
 </body>
 </html>

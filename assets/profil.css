@@ -1,52 +1,54 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f6f8fa;
+  background: #181c1b;
   margin: 0;
   padding: 0;
 }
 
 h2,
 h3 {
-  color: #2c3e50;
+  color: #1abc9c;
   margin-left: 20px;
 }
 
 table {
   margin: 20px;
   border-collapse: collapse;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: #232826;
+  box-shadow: 0 2px 8px rgba(30, 60, 40, 0.15);
+  color: #e0ffe0;
 }
 
 table td {
   padding: 10px 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #1abc9c33;
 }
 
 a {
   display: inline-block;
   margin: 20px;
-  color: #3498db;
+  color: #1abc9c;
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
+  color: #16a085;
 }
 
 form {
   margin: 20px;
   padding: 20px;
-  background: #fff;
+  background: #232826;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(30, 60, 40, 0.1);
   max-width: 350px;
 }
 
 label {
   display: block;
   margin-bottom: 10px;
-  color: #34495e;
+  color: #b6ffb6;
 }
 
 input[type="password"] {
@@ -54,25 +56,88 @@ input[type="password"] {
   padding: 8px;
   margin-top: 4px;
   margin-bottom: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #1abc9c;
   border-radius: 4px;
   box-sizing: border-box;
+  background: #181c1b;
+  color: #e0ffe0;
 }
 
 button[type="submit"] {
-  background: #3498db;
-  color: #fff;
+  background: #1abc9c;
+  color: #181c1b;
   border: none;
   padding: 10px 18px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1em;
+  font-weight: bold;
 }
 
 button[type="submit"]:hover {
-  background: #217dbb;
+  background: #16a085;
+  color: #fff;
 }
 
 p {
   margin: 20px;
+  color: #e0ffe0;
+}
+
+.profile-popup {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  width: 350px;
+  background: #232826;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(30, 60, 40, 0.25),
+    0 1.5px 6px rgba(30, 60, 40, 0.12);
+  z-index: 9999;
+  padding: 28px 28px 18px 28px;
+  animation: fadeInProfile 0.3s;
+  color: #e0ffe0;
+}
+
+@keyframes fadeInProfile {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-popup h2,
+.profile-popup h3 {
+  margin-left: 0;
+  color: #1abc9c;
+}
+
+.profile-popup table {
+  margin: 0 0 18px 0;
+  width: 100%;
+  background: transparent;
+  color: #e0ffe0;
+}
+
+.profile-popup a {
+  margin: 0 0 18px 0;
+  float: right;
+  color: #1abc9c;
+}
+
+.profile-popup form {
+  margin: 0;
+  max-width: 100%;
+  box-shadow: none;
+  padding: 0;
+  background: none;
+}
+
+.profile-popup p {
+  margin: 0 0 10px 0;
+  color: #e0ffe0;
 }

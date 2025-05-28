@@ -26,6 +26,9 @@ $query_penyusutan = "
 
 $result_penyusutan = mysqli_query($conn, $query_penyusutan);
 ?>
+<?php
+$dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php';
+?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -37,7 +40,7 @@ $result_penyusutan = mysqli_query($conn, $query_penyusutan);
 <body>
 <div class="main-content">
     <h2>📉 Kelola Penyusutan Aset</h2>
-    <a href="../adm/admin.php" class="btn-kembali">⬅️ Kembali ke Dashboard</a>
+    <a href="<?= $dashboard ?>" class="btn-kembali">⬅️ Kembali ke Dashboard</a>
 
     <!-- Tabel 1: Kelola Penyusutan -->
     <h3>Aset Belum Disusutkan (<?= $tahun_sekarang ?>)</h3>

@@ -2,9 +2,10 @@
 session_start();
 include('../include/koneksi.php');
 
-// Batasi akses hanya untuk admin
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    echo " Akses ditolak. Halaman ini hanya bisa diakses oleh admin.";
+$allowed_roles = ['admin', 'staf'];
+
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
+    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
     exit();
 }
 
@@ -65,7 +66,9 @@ if (isset($_GET['edit'])) {
     $stmt->close();
 }
 ?>
-
+<?php
+$dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -78,7 +81,7 @@ if (isset($_GET['edit'])) {
 </head>
 <body>
     <div class="container">
-        <h2>📦 Kategori Aset</h2>
+        <h2> Kategori Aset</h2>
 
         <!-- Form tambah / edit kategori -->
         <form method="post" action="">
@@ -126,6 +129,15 @@ if (isset($_GET['edit'])) {
             <?php endif; ?>
         </table>
     </div>
-    <a href="admin.php" style="display: inline-block; padding: 10px; background: #007BFF; color: white; text-decoration: none; border-radius: 5px;">⬅ Kembali ke Dashboard</a>
+    <a href="<?= $dashboard ?>" class="btn-kembali">⬅ Kembali ke Dashboard</a>
+    <script>
+        // Script untuk konfirmasi penghapusan
+        document.querySelectorAll('a[href*="hapus"]').forEach(link => {
+            link.addEventListener('click', function(event) {
+                if (!confirm('Yakin ingin menghapus kategori ini?')) {
+                    event.preventDefault();
+                }
+            });
+        });
 </body>
 </html>

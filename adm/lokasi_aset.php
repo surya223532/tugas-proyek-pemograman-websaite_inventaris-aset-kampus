@@ -1,8 +1,22 @@
 <?php
 session_start();
-include('../include/koneksi.php');
+include('../include/koneksi.php'); // koneksi ke database 
+$allowed_roles = ['admin', 'staf'];
 
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
+    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
+    exit();
+}   
 
+if ($_SESSION['role'] === 'admin') {
+    $dashboard = '../adm/admin.php';
+} elseif ($_SESSION['role'] === 'staf') {
+    $dashboard = '../staf/staf.php';
+} elseif ($_SESSION['role'] === 'pimpinan') {
+    $dashboard = '../pimpinan/pimpinan.php';
+} else {
+    $dashboard = '../dashboard.php'; // fallback jika ada role lain
+}
 
 $message = "";
 
@@ -78,7 +92,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lokasi Aset - Sistem Manajemen Aset Kampus</title>
-    <link rel="stylesheet" href="assets/pengelola_aset.css">
+    <link rel="stylesheet" href="../assets/pengelola_aset.css">
 </head>
 <body>
 <div class="container">
@@ -136,6 +150,7 @@ $result = $conn->query($sql);
         </tbody>
     </table>
 </div>
+<a href="<?= $dashboard ?>" class="btn-kembali"> Kembali ke Dashboard</a>
 </body>
 </html>
 

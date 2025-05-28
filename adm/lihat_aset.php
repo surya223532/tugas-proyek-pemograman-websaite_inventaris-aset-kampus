@@ -1,8 +1,10 @@
 <?php
 session_start();
 include('../include/koneksi.php'); // koneksi ke database 
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php"); // Jika bukan admin, arahkan kembali ke login
+$allowed_roles = [ 'pimpinan','admin', 'staf']; 
+
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
+    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
     exit();
 }
 
@@ -25,12 +27,12 @@ $result = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Aset</title>
-    <link rel="stylesheet" href="../assets/style.css"> <!-- Anda bisa menyesuaikan path dan file CSS -->
+    <link rel="stylesheet" href="../assets/style.css"> 
 </head>
 <body>
     <header>
-        <h2>🔍 Daftar Aset</h2>
-        <a href="admin.php">Kembali ke Dashboard</a>
+        <h2> Daftar Aset</h2>
+        <button onclick="window.history.back()">Kembali</button>
     </header>
 
     <main>

@@ -1,0 +1,193 @@
+/* Warna dasar */
+:root {
+  --hijau-cerah: #4caf50;
+  --hijau-tua: #388e3c;
+  --hijau-tua-hover: #45a049;
+  --hijau-terang: #66bb6a;
+  --merah-terang: #e74c3c;
+  --merah-gelap: #c0392b;
+  --biru-gelap: #2f3d48;
+  --abu-terang: #f0f4f8;
+  --putih: #ffffff;
+  --abu-teks: #2c3e50;
+  --abu-teks2: #555;
+  --abu-teks3: #777;
+}
+
+/* Latar belakang utama */
+body {
+  background: var(--abu-terang);
+  color: var(--abu-teks);
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Kontainer utama */
+.container {
+  background: var(--putih);
+  max-width: 900px;
+  margin: 40px auto 30px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(47, 61, 72, 0.08);
+  padding: 32px 36px 36px 36px;
+}
+
+/* Judul */
+h2,
+h3 {
+  color: var(--hijau-tua);
+  margin-top: 0;
+}
+
+/* Pesan sukses/gagal */
+.message {
+  background: var(--hijau-terang);
+  color: var(--putih);
+  padding: 10px 18px;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+/* Form section */
+.form-section {
+  margin-bottom: 32px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--abu-terang);
+}
+
+.form-section label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--abu-teks2);
+  font-weight: 500;
+}
+
+.form-section input[type="text"],
+.form-section input[type="number"],
+.form-section input[type="date"],
+.form-section select {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 16px;
+  border: 1.5px solid var(--hijau-terang);
+  border-radius: 5px;
+  background: #f9f9f9;
+  color: var(--abu-teks);
+  font-size: 1em;
+  transition: border 0.2s;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+  border-color: var(--hijau-cerah);
+  outline: none;
+}
+
+/* Tombol utama */
+button,
+.form-section button[type="submit"] {
+  background: var(--hijau-cerah);
+  color: var(--putih);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 22px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+button:hover,
+.form-section button[type="submit"]:hover {
+  background: var(--hijau-tua-hover);
+}
+
+/* Tombol aksi (edit, hapus) */
+a {
+  color: var(--hijau-cerah);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--hijau-tua-hover);
+  text-decoration: underline;
+}
+
+/* Tombol hapus (khusus) */
+a[href*="hapus_aset"] {
+  color: var(--merah-terang);
+  font-weight: 600;
+}
+
+a[href*="hapus_aset"]:hover {
+  color: var(--merah-gelap);
+}
+
+/* Tabel daftar aset */
+.aset-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--putih);
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(47, 61, 72, 0.04);
+}
+
+.aset-list th,
+.aset-list td {
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.aset-list th {
+  background: var(--hijau-cerah);
+  color: var(--putih);
+  font-weight: 700;
+  border-bottom: 3px solid var(--hijau-terang);
+}
+
+.aset-list tr:nth-child(even) {
+  background: #f8fdf8;
+}
+
+.aset-list tr:hover {
+  background: var(--hijau-terang);
+  color: var(--putih);
+  transition: background 0.2s, color 0.2s;
+}
+
+.aset-list td {
+  color: var(--abu-teks3);
+}
+
+/* Tombol kembali */
+button[onclick*="history.back"] {
+  background: var(--biru-gelap);
+  color: var(--putih);
+  margin-top: 24px;
+}
+
+button[onclick*="history.back"]:hover {
+  background: var(--hijau-tua);
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .container {
+    padding: 12px 4vw;
+  }
+  .aset-list table,
+  .aset-list th,
+  .aset-list td {
+    font-size: 0.95em;
+  }
+  .form-section input,
+  .form-section select {
+    font-size: 0.97em;
+  }
+}

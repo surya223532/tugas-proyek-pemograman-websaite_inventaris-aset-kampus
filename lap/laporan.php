@@ -1,3 +1,13 @@
+<?php
+session_start();
+include('../include/koneksi.php'); // koneksi ke database 
+$allowed_roles = ['admin', 'staf','pimpinan'];
+
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
+    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -85,7 +95,6 @@ if ($result->num_rows > 0) {
 
     $persentasePenyusutan = ($totalNilaiAset > 0) ? ($totalPenyusutan / $totalNilaiAset) * 100 : 0;
 
-    // Menambahkan data ringkasan di bagian bawah tabel
     echo "<tr>
             <td colspan='7' style='text-align: right; font-weight: bold;'>Total Penyusutan</td>
             <td colspan='2'>Rp " . number_format($totalPenyusutan, 0, ',', '.') . "</td>
@@ -110,8 +119,17 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
+<?php if (!empty($labels)) : ?>
 <!-- Canvas Grafik -->
 <canvas id="grafikAset" width="800" height="400"></canvas>
+
+<!-- Navigasi & Tombol -->
+<div style="text-align: center; margin-top: 20px;">
+    <button onclick="window.history.back()">Kembali</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+    <button onclick="printPage()">Print</button>
+</div>
+<?php endif; ?>
 
 <script>
     const labels = <?= $json_labels ?? '[]' ?>;
@@ -158,7 +176,6 @@ $conn->close();
         }
     });
 
-    // Fungsi untuk mengunduh laporan dalam format PDF
     function downloadPDF() {
         window.jsPDF = window.jspdf.jsPDF;
         const doc = new jsPDF();
@@ -167,18 +184,10 @@ $conn->close();
         doc.save('laporan_aset.pdf');
     }
 
-    // Cetak halaman
     function printPage() {
         window.print();
     }
 </script>
-
-<!-- Navigasi & Tombol -->
-<p><a href="../adm/admin.php"><button>Kembali ke Dashboard</button></a></p>
-<div style="text-align: center; margin-top: 20px;">
-    <button onclick="downloadPDF()">Download PDF</button>
-    <button onclick="printPage()">Print</button>
-</div>
 
 </body>
 </html>

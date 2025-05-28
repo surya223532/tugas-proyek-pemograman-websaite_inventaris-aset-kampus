@@ -16,6 +16,7 @@ if (isset($_POST['login'])) {
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
+        $_SESSION['username'] = $user['username']; // Tambahkan baris ini
 
         // Redirect sesuai role
         switch ($user['role']) {

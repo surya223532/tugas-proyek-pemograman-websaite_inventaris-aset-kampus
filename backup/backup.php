@@ -3,7 +3,7 @@ session_start();
 include('../include/koneksi.php'); // Koneksi ke database
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: /pinjam/login.php");
+    header("Location: /siman/login.php");
     exit();
 }
 

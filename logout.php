@@ -18,6 +18,6 @@ session_unset();
 session_destroy();
 
 // Redirect ke halaman login di lokasi yang benar
-header("Location: /pinjam/login.php");
+header("Location: /siman/login.php");
 exit();
 ?>

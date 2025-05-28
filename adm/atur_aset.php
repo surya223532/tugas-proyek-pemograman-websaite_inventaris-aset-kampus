@@ -1,5 +1,14 @@
 <?php
-include('../include/koneksi.php');
+session_start();
+include('../include/koneksi.php'); // koneksi ke database 
+$allowed_roles = ['admin', 'staf'];
+
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
+    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
+    exit();
+}
+
+
 
 // Fungsi tambah aset
 if (isset($_POST['tambah_aset'])) {
@@ -171,7 +180,7 @@ if (isset($_GET['edit_aset'])) {
             </table>
         </div>
 
-        <a href="admin.php">Kembali ke Dashboard</a>
+        <button onclick="window.history.back()">Kembali</button>
     </div>
 </body>
 </html>

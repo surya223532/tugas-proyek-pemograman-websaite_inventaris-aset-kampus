@@ -38,7 +38,7 @@ if (isset($_POST['login'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Login SIMAN</title>
+    <title>LOGIN SIMAN</title>
 </head>
 <body>
     <h2>Login SIMAN</h2>

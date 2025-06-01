@@ -141,3 +141,41 @@ p {
   margin: 0 0 10px 0;
   color: #e0ffe0;
 }
+/* Popup Profil */
+.profile-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 300px;
+  display: none; /* Default disembunyikan */
+  z-index: 1000;
+  border-radius: 8px;
+}
+
+.profile-popup h2 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.profile-popup table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.profile-popup table td {
+  padding: 5px 0;
+}
+
+.profile-popup button.close-btn {
+  float: right;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #1abc9c;
+  cursor: pointer;
+}

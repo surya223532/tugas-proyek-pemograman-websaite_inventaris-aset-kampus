@@ -7,6 +7,11 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
     header("Location: /siman/login.php");
     exit();
 }
+
+// Ambil data pengguna yang sedang login
+$email = $_SESSION['email'];
+$query = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
+$user = mysqli_fetch_assoc($query);
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +21,7 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard <?= ucfirst($_SESSION['role']) ?></title>
     <link rel="stylesheet" href="../assets/admin.css">
+    <link rel="stylesheet" href="../assets/staf.css"> <!-- Tambahkan tautan ke staf.css -->
     <script src="../assets/admin.js" defer></script>
     <script>
         function toggleSubmenu(id) {
@@ -37,8 +43,6 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
     <div class="sidebar">
         <h2>Manajemen Aset</h2>
         <ul>
-            
-
             <li class="submenu-item">
                 <a href="javascript:void(0);" onclick="toggleSubmenu('aset-lengkap')">📝 Pengelolaan Aset Lengkap</a>
                 <ul class="submenu" id="aset-lengkap">
@@ -53,11 +57,7 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
             <li><a href="../lap/laporan.php">📊 Laporan & Statistik</a></li>
 
             <li class="submenu-item">
-                <a href="#" onclick="showProfilePopup();return false;">👤 Profil</a>
-                <ul class="submenu" id="profil">
-                    <li><a href="#" onclick="showProfilePopup();return false;">Lihat Profil</a></li>
-
-                </ul>
+                <a href="javascript:void(0);" onclick="showProfilePopup()">👤 Profil</a>
             </li>
 
             <li class="submenu-item">
@@ -66,15 +66,14 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
                     <li><a href="setting1.php">Setting 1</a></li>
                     <li><a href="setting2.php">Setting 2</a></li>
                 </ul>
-                <a href="/siman/logout.php">Logout</a>
             </li>
+            <li><a href="/siman/logout.php">Logout</a></li>
         </ul>
     </div>
 
     <!-- Konten Utama -->
     <div class="main-content">
         <header>
-            
         </header>
 
         <main>
@@ -100,7 +99,10 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
         <tr><td>Nama</td><td><?= htmlspecialchars($user['nama']) ?></td></tr>
         <tr><td>Role</td><td><?= htmlspecialchars($user['role']) ?></td></tr>
       </table>
-      <!-- Form ubah password, dst, copy dari profil.php -->
+      <h3>Ubah Password</h3>
+      <form method="post" action="../fitur/profil.php">
+          <button type="submit">Ubah Password</button>
+      </form>
     </div>
 </body>
 </html>

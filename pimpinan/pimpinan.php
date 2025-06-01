@@ -1,4 +1,4 @@
-<ul?php
+<?php
 session_start();
 include('../include/koneksi.php'); // koneksi ke database 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pimpinan') {
@@ -6,6 +6,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pimpinan') {
     // Jika bukan pimpinan, arahkan kembali ke login
     exit();
 }
+
+// Ambil data pengguna yang sedang login
+$email = $_SESSION['email'];
+$query = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
+$user = mysqli_fetch_assoc($query);
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +30,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pimpinan') {
                 submenu.style.display = "none";
             }
         }
+
+        function showProfilePopup() {
+            document.getElementById('profile-popup').style.display = 'block';
+        }
+
+        function closeProfilePopup() {
+            document.getElementById('profile-popup').style.display = 'none';
+        }
     </script>
 </head>
 <body>
@@ -39,9 +52,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pimpinan') {
             
             <li><a href="../lap/laporan.php"> Laporan & Statistik</a></li>
              <li class="submenu-item">
-                <a href="javascript:void(0);" onclick="toggleSubmenu('profil')">👤 Profil</a>
-                <ul class="submenu" id="profil">
-                    <li><a href="../fitur/profil.php">Lihat Profil</a></li></ul>
+                <a href="javascript:void(0);" onclick="showProfilePopup()">👤 Profil</a>
+            </li>
 
           
 
@@ -75,6 +87,21 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pimpinan') {
         <footer>
             <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
         </footer>
+    </div>
+
+    <!-- Popup Profil -->
+    <div class="profile-popup" id="profile-popup" style="display:none;">
+        <button onclick="closeProfilePopup()" style="float:right;background:none;border:none;font-size:18px;color:#1abc9c;cursor:pointer;">&times;</button>
+        <h2>Profil Saya</h2>
+        <table>
+            <tr><td>Email</td><td><?= htmlspecialchars($user['email']) ?></td></tr>
+            <tr><td>Nama</td><td><?= htmlspecialchars($user['nama']) ?></td></tr>
+            <tr><td>Role</td><td><?= htmlspecialchars($user['role']) ?></td></tr>
+        </table>
+        <h3>Ubah Password</h3>
+        <form method="post" action="../fitur/profil.php">
+            <button type="submit">Ubah Password</button>
+        </form>
     </div>
 </body>
 </html>

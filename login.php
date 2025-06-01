@@ -39,7 +39,6 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <title>Login SIMAN</title>
-    <link rel="stylesheet" href="/SIMAN/assets/login.css">
 </head>
 <body>
     <div class="login-container">

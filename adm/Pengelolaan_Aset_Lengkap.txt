@@ -1,0 +1,142 @@
+<?php
+include('../include/koneksi.php');
+
+// Fungsi tambah kategori
+if (isset($_POST['tambah_kategori'])) {
+    $nama_kategori = $_POST['nama_kategori'];
+    
+    $check = mysqli_query($conn, "SELECT * FROM kategori WHERE nama_kategori = '$nama_kategori'");
+    if (mysqli_num_rows($check) > 0) {
+        $message = "Kategori sudah ada!";
+    } else {
+        $query = "INSERT INTO kategori (nama_kategori) VALUES ('$nama_kategori')";
+        if (mysqli_query($conn, $query)) {
+            $message = "Kategori berhasil ditambahkan!";
+        } else {
+            $message = "Gagal menambahkan kategori: " . mysqli_error($conn);
+        }
+    }
+}
+
+// Fungsi tambah lokasi
+if (isset($_POST['tambah_lokasi'])) {
+    $nama_lokasi = $_POST['nama_lokasi'];
+    
+    $check = mysqli_query($conn, "SELECT * FROM lokasi WHERE nama_lokasi = '$nama_lokasi'");
+    if (mysqli_num_rows($check) > 0) {
+        $message = "Lokasi sudah ada!";
+    } else {
+        $query = "INSERT INTO lokasi (nama_lokasi) VALUES ('$nama_lokasi')";
+        if (mysqli_query($conn, $query)) {
+            $message = "Lokasi berhasil ditambahkan!";
+        } else {
+            $message = "Gagal menambahkan lokasi: " . mysqli_error($conn);
+        }
+    }
+}
+
+// Ambil data kategori dan lokasi untuk dropdown
+$kategori_list = mysqli_query($conn, "SELECT * FROM kategori");
+$lokasi_list = mysqli_query($conn, "SELECT * FROM lokasi");
+
+// Proses tambah aset
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_aset'])) {
+    $nama_aset = $_POST['nama_aset'];
+    $kategori_id = $_POST['kategori_id'];
+    $lokasi_id = $_POST['lokasi_id'];
+    $tanggal_perolehan = $_POST['tanggal_perolehan'];
+    $nilai_awal = $_POST['nilai_awal'];
+    $status = $_POST['status'];
+    
+    $query = "INSERT INTO aset (nama_aset, kategori_id, lokasi_id, tanggal_perolehan, nilai_awal, status)
+              VALUES ('$nama_aset', '$kategori_id', '$lokasi_id', '$tanggal_perolehan', '$nilai_awal', '$status')";
+    
+    if (mysqli_query($conn, $query)) {
+        $message = "Aset berhasil ditambahkan!";
+    } else {
+        $message = "Gagal menambahkan aset: " . mysqli_error($conn);
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pengelolaan Aset</title>
+    <link rel="stylesheet" href="../assets/pengelola_aset.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Pengelolaan Aset Lengkap</h2>
+
+        <?php if (isset($message)) echo "<p class='message'><strong>$message</strong></p>"; ?>
+
+        <!-- Form untuk menambah kategori -->
+        <div class="form-section">
+            <h3>Tambah Kategori</h3>
+            <form method="post">
+                <label for="nama_kategori">Nama Kategori:</label>
+                <input type="text" name="nama_kategori" required>
+                <button type="submit" name="tambah_kategori">Tambah Kategori</button>
+            </form>
+        </div>
+
+        <!-- Form untuk menambah lokasi -->
+        <div class="form-section">
+            <h3>Tambah Lokasi</h3>
+            <form method="post">
+                <label for="nama_lokasi">Nama Lokasi:</label>
+                <input type="text" name="nama_lokasi" required>
+                <button type="submit" name="tambah_lokasi">Tambah Lokasi</button>
+            </form>
+        </div>
+
+        <!-- Form untuk menambah aset -->
+        <div class="form-section">
+            <h3>Form Tambah Aset</h3>
+            <form method="post">
+                <label for="nama_aset">Nama Aset:</label>
+                <input type="text" name="nama_aset" required>
+
+                <label for="kategori_id">Kategori Aset:</label>
+                <select name="kategori_id" required>
+                    <option value="">Pilih Kategori</option>
+                    <?php while($kategori = mysqli_fetch_assoc($kategori_list)) { ?>
+                        <option value="<?= $kategori['id_kategori'] ?>"><?= $kategori['nama_kategori'] ?></option>
+                    <?php } ?>
+                </select>
+
+                <label for="lokasi_id">Lokasi Aset:</label>
+                <select name="lokasi_id" required>
+                    <option value="">Pilih Lokasi</option>
+                    <?php while($lokasi = mysqli_fetch_assoc($lokasi_list)) { ?>
+                        <option value="<?= $lokasi['id_lokasi'] ?>"><?= $lokasi['nama_lokasi'] ?></option>
+                    <?php } ?>
+                </select>
+
+                <label for="tanggal_perolehan">Tanggal Perolehan:</label>
+                <input type="date" name="tanggal_perolehan" required>
+
+                <label for="nilai_awal">Nilai Awal Aset:</label>
+                <input type="number" name="nilai_awal" required>
+
+                <label for="status">Status:</label>
+                <select name="status" required>
+                    <option value="Aktif">Aktif</option>
+                    <option value="Tidak Aktif">Tidak Aktif</option>
+                </select>
+
+                <button type="submit" name="submit_aset">Tambah Aset</button>
+            </form>
+        </div>
+
+        <!-- Tombol Kembali -->
+        <div class="back-button">
+            <a href="admin.php">⬅ Kembali ke Admin</a>
+        </div>
+    </div>
+
+    <script src="../assets/pengelola_aset.js"></script>
+</body>
+</html>

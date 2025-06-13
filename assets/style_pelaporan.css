@@ -1,17 +1,23 @@
 /* Umum */
 body {
   font-family: Arial, sans-serif;
-  background-color: #212121;
-  color: white;
+  background-color: #ffffff;
+  color: #000000;
   margin: 0;
   padding: 20px;
 }
 
 h2 {
   text-align: center;
-  color: #76c7c0; /* Warna hijau muda */
+  color: #075a8e; /* Warna biru tua */
   font-size: 24px;
   margin-bottom: 20px;
+  border-bottom: 2px solid #e67e22; /* Warna orange */
+  padding-bottom: 10px;
+  display: inline-block;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Tabel */
@@ -19,97 +25,153 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 table th,
 table td {
   padding: 12px 15px;
   text-align: left;
-  border: 1px solid #555;
+  border: 1px solid #d4e6f1; /* Warna biru muda untuk border */
 }
 
 table th {
-  background-color: #333;
-  color: #76c7c0;
+  background-color: #003366;; /* Warna biru */
+  color: white;
+  font-weight: bold;
 }
 
 table tr:nth-child(even) {
-  background-color: #2a2a2a;
+  background-color: #f9f9f9;
 }
 
 table tr:nth-child(odd) {
-  background-color: #212121;
+  background-color: #ffffff;
 }
 
-table td {
-  color: #bbb;
+table tr:hover {
+  background-color: #f5e6d0; /* Warna orange sangat muda saat hover */
 }
 
 /* Grafik */
 canvas {
   display: block;
-  margin: 20px auto;
-  background-color: #333;
-  border-radius: 10px;
+  margin: 30px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d4e6f1;
 }
 
 /* Tombol */
 button {
-  background-color: #76c7c0;
+  background-color: #e67e22; /* Warna orange */
   color: white;
   border: none;
-  padding: 12px 25px;
+  padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
+  border-radius: 4px;
+  transition: all 0.3s ease;
   margin: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-  background-color: #66b8b2;
+  background-color: #d35400; /* Warna orange lebih tua */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 button:active {
-  background-color: #57a59d;
+  background-color: #ba4a00;
+  transform: translateY(0);
 }
 
-/* Tombol Kembali */
-a {
-  text-decoration: none;
-}
-
-/* Wrapper untuk tombol download dan print */
-div {
+/* Wrapper untuk tombol */
+.button-container {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #d4e6f1;
 }
 
-/* Keterangan Statistik */
-p {
-  font-size: 18px;
+/* Footer */
+footer {
   text-align: center;
-  color: #76c7c0;
+  margin-top: 40px;
+  color: #7f8c8d;
+  font-size: 14px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+/* Form Pencarian */
+.search-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search-container input[type=text] {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #d4e6f1;
+  border-radius: 4px;
+  margin-right: 5px;
+  width: 250px;
+  transition: all 0.3s;
+}
+
+.search-container input[type=text]:focus {
+  outline: none;
+  border-color: #e67e22;
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+}
+
+.search-container button {
+  padding: 8px 15px;
+  font-size: 14px;
+  background-color: #3498db; /* Warna biru lebih muda */
+  color: white;
+}
+
+.search-container button:hover {
+  background-color: #2980b9;
+}
+
+/* Highlight untuk total */
+table tr:last-child,
+table tr:nth-last-child(2),
+table tr:nth-last-child(3) {
+  background-color: #f5e6d0 !important; /* Warna orange sangat muda */
   font-weight: bold;
 }
 
-/* Tabel Ringkasan */
-.tabelRingkasan {
-  margin-top: 20px;
-  border-collapse: collapse;
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.tabelRingkasan th,
-.tabelRingkasan td {
-  border: 1px solid #555;
-  padding: 8px 12px;
-  text-align: left;
-}
-
-.tabelRingkasan th {
-  background-color: #333;
-  color: #76c7c0;
+/* Responsif */
+@media screen and (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+  
+  table th,
+  table td {
+    padding: 8px 10px;
+  }
+  
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container input[type=text] {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-right: 0;
+  }
+  
+  .search-container button {
+    width: 100%;
+  }
 }

@@ -4,7 +4,7 @@ body {
     background: linear-gradient(to right, #f4f6f9, #e6ecf3);
     margin: 0;
     padding: 0;
-    color: #333;
+    color: #000000;
   }
   
   header {
@@ -14,7 +14,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   header h2 {
@@ -142,5 +142,4 @@ body {
     form input[type="text"] {
       width: 100%;
     }
-  }
-  
+  } 

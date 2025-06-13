@@ -8,12 +8,12 @@ body {
 }
 
 .container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 20px 30px;
-    background-color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 12px;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 25px 35px;
+  background-color: var(--putih);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 15px;
 }
 
 h2, h3 {

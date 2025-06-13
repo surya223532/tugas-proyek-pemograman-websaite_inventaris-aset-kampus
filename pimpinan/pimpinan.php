@@ -201,7 +201,7 @@ $result_tabel = mysqli_query($conn, $query_tabel);
 
     <!-- Popup Profil -->
     <div class="profile-popup" id="profile-popup">
-        <button onclick="closeProfilePopup()">&times;</button>
+        <button class="close-btn" onclick="closeProfilePopup()">✖</button>
         <h2>Profil Saya</h2>
         <?php if (!empty($user)): ?>
             <table>

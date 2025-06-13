@@ -74,6 +74,9 @@ $query_tabel = "
     JOIN lokasi ON aset.lokasi_id = lokasi.id_lokasi
 ";
 $result_tabel = mysqli_query($conn, $query_tabel);
+
+// Tambahkan include untuk popup_profil.php
+include('../include/popup_profil.php');
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +107,7 @@ $result_tabel = mysqli_query($conn, $query_tabel);
         }
 
         function showProfilePopup() {
-            openProfilePopup();
+            document.getElementById('profile-popup').style.display = 'block';
         }
     </script>
 </head>
@@ -123,10 +126,10 @@ $result_tabel = mysqli_query($conn, $query_tabel);
 
             <!-- Dropdown menu Pengaturan -->
             <li class="submenu-item">
-                <a href="javascript:void(0);" onclick="toggleSubmenu('pengaturan')"> Pengaturan</a>
+                <a href="javascript:void(0);" onclick="toggleSubmenu('pengaturan')">Pengaturan</a>
                 <ul class="submenu" id="pengaturan">
                     <li><a href="javascript:void(0);" onclick="showProfilePopup()">Profil</a></li>
-                    <li> <a href="/siman/logout.php">Logout</a></li>
+                    <li><a href="/siman/logout.php">Logout</a></li>
                 </ul>
             </li>
         </ul>

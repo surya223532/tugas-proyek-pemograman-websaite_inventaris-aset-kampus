@@ -417,12 +417,9 @@ tbody tr:hover {
 
 .profile-popup {
   position: fixed;
-  top: 50px;
-  right: 50px;
+  top: 20px;
+  right: 20px;
   width: 380px;
-  top : 50%;
-  left : 50%;
-  transform: translate(-50%, -50%);
   max-height: 50vh;
   background-color: #ffffff;
   border-radius: 4px;
@@ -449,23 +446,7 @@ tbody tr:hover {
 }
 
 /* Tombol Tutup */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  width: 22px;       /* Lebar lingkaran disamakan dengan ukuran font "Profil Saya" */
-  height: 22px;      /* Tinggi lingkaran disamakan dengan ukuran font "Profil Saya" */
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 14px;   /* Ukuran "X" di dalam lingkaran, bisa disesuaikan */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  /* Animasi dihilangkan, sehingga tidak ada properti transition */
-}
+
 /* Header */
 .profile-popup h2 {
   margin-top: 0;
@@ -580,3 +561,6 @@ canvas {
   max-width: 100%; /* Pastikan ukuran tidak melebihi kontainer */
   height: auto; /* Sesuaikan tinggi secara otomatis */
 }
+
+
+

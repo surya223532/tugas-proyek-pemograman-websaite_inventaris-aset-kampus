@@ -141,5 +141,6 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
                 }
             });
         });
+    </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ include('../include/koneksi.php');
 
 $tahun_sekarang = date('Y');
 
-// Fetch aset yang belum disusutkan tahun ini
+// Ambil aset yang belum disusutkan tahun ini
 $query_aset = "
     SELECT * FROM aset 
     WHERE id_aset NOT IN (
@@ -13,7 +13,7 @@ $query_aset = "
 ";
 $result_aset = mysqli_query($conn, $query_aset);
 
-// Automatically save depreciation for each asset
+// Simpan otomatis data penyusutan
 while ($aset = mysqli_fetch_assoc($result_aset)) {
     if (!isset($aset['masa_manfaat']) || !$aset['masa_manfaat'] || !$aset['tanggal_perolehan'] || !$aset['nilai_awal']) continue;
 
@@ -23,7 +23,6 @@ while ($aset = mysqli_fetch_assoc($result_aset)) {
     $nilai_awal = $aset['nilai_awal'];
     $nilai_susut = $masa_manfaat > 0 ? $nilai_awal / $masa_manfaat : 0;
 
-    // Calculate remaining value
     if ($umur >= $masa_manfaat) {
         $nilai_sisa = 0;
     } elseif ($umur > 0) {
@@ -32,7 +31,6 @@ while ($aset = mysqli_fetch_assoc($result_aset)) {
         $nilai_sisa = $nilai_awal;
     }
 
-    // Save depreciation data
     $id_aset = $aset['id_aset'];
     $query_simpan = "
         INSERT INTO penyusutan (id_aset, tahun, nilai_susut, nilai_sisa) 
@@ -41,7 +39,7 @@ while ($aset = mysqli_fetch_assoc($result_aset)) {
     mysqli_query($conn, $query_simpan);
 }
 
-// Fetch saved depreciation data
+// Ambil data penyusutan
 $query_penyusutan = "
     SELECT p.*, a.nama_aset, a.nilai_awal, a.masa_manfaat, k.nama_kategori AS kategori, l.nama_lokasi AS lokasi
     FROM penyusutan p
@@ -65,15 +63,18 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
 <body>
 <header>
     <h2>Kelola Penyusutan</h2>
-    <button onclick="window.location.href='<?= $dashboard ?>'">Dashboard</button>
 </header>
+
 <main>
     <h3>Daftar Penyusutan Aset</h3>
+
+    <!-- Pencarian -->
     <form onsubmit="event.preventDefault(); filterTable();">
         <input type="text" id="searchInput" placeholder="Cari aset...">
         <button type="submit">Cari</button>
     </form>
 
+    <!-- Tabel -->
     <div class="table-container">
         <table>
             <thead>
@@ -103,6 +104,9 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
             <?php endwhile ?>
             </tbody>
         </table>
+    </div>
+    <div class="dashboard-container">
+        <button onclick="window.location.href='<?= $dashboard ?>'">Kembali</button>
     </div>
 </main>
 <footer>

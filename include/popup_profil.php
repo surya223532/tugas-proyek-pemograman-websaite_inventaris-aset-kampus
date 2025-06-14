@@ -1,5 +1,15 @@
 <!-- filepath: c:\xampp\htdocs\siman\include\popup_profil.php -->
 <style>
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5); /* Warna hitam transparan */
+        z-index: 999; /* Lebih rendah dari popup */
+        display: none;
+    }
     .profile-popup {
         position: fixed;
         top: 10px; /* Jarak dari atas */
@@ -12,8 +22,9 @@
         display: none; /* Popup akan terlihat saat diubah ke block */
     }
 </style>
+<div class="overlay" id="popup-overlay" style="display: none;"></div>
 <div class="profile-popup" id="profile-popup" style="display:none;">
-    <button onclick="closeProfilePopup()" style="float:right;background:none;border:none;font-size:18px;color:#1abc9c;cursor:pointer;">&times;</button>
+    <button onclick="closeProfilePopup()" style="position : absolute; top : 15px;right : 20px;width : 22px;height : 22px; background-color : red; color : white; border : none; border-radius : 50%;font-size : 14px;display : flex; justify-content : center;align-items : center;padding : 0;">&times;</button>
     <h2>Profil Saya</h2>
     <table>
         <tr><td>Email</td><td><?= htmlspecialchars($user['email'] ?? 'Tidak tersedia') ?></td></tr>
@@ -75,10 +86,12 @@ if (empty($user)) {
 <script>
 function showProfilePopup() {
     document.getElementById('profile-popup').style.display = 'block';
+    document.getElementById('popup-overlay').style.display = 'block';
     console.log('Popup dibuka');
 }
 
 function closeProfilePopup() {
     document.getElementById('profile-popup').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
 }
 </script>

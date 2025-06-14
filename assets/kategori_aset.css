@@ -86,7 +86,7 @@
     margin: 20px auto;
     padding: 10px 16px;
     text-decoration: none;
-    background-color: var(--jingga);
+    background-color: var(--biru-tua);
     color: white;
     border-radius: 6px;
     font-size: 14px;
@@ -94,7 +94,7 @@
   }
   
   a.btn-kembali:hover {
-    background-color: var(--jingga-hover);
+    background-color: var(--biru-hover);
   }
   
   a {

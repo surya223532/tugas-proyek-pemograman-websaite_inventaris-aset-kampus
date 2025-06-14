@@ -93,6 +93,7 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lokasi Aset - Sistem Manajemen Aset Kampus</title>
     <link rel="stylesheet" href="../assets/lokasi_aset.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 <div class="container">
@@ -115,7 +116,7 @@ $result = $conn->query($sql);
             <?= $edit_mode ? 'Update Lokasi' : 'Tambah Lokasi'; ?>
         </button>
         <?php if ($edit_mode): ?>
-            <a href="lokasi_aset.php">Batal Edit</a>
+            <a href="lokasi_aset.php" class="btn-batal">Batal Edit</a>
         <?php endif; ?>
     </form>
 
@@ -139,8 +140,12 @@ $result = $conn->query($sql);
                     <td><?= htmlspecialchars($row['nama_lokasi']); ?></td>
                     <td><?= htmlspecialchars($row['alamat']); ?></td>
                     <td>
-                        <a href="lokasi_aset.php?edit=<?= $row['id_lokasi']; ?>">Edit</a> |
-                        <a href="lokasi_aset.php?hapus=<?= $row['id_lokasi']; ?>" onclick="return confirm('Yakin ingin menghapus lokasi ini?');">Hapus</a>
+                        <a href="lokasi_aset.php?edit=<?= $row['id_lokasi']; ?>" class="btn-edit" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="lokasi_aset.php?hapus=<?= $row['id_lokasi']; ?>" class="btn-hapus" title="Hapus" onclick="return confirm('Yakin ingin menghapus lokasi ini?');">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </td>
                 </tr>
             <?php endwhile; ?>
@@ -149,8 +154,11 @@ $result = $conn->query($sql);
         <?php endif; ?>
         </tbody>
     </table>
-</div>
-<a href="<?= $dashboard ?>" class="btn-kembali"> Kembali ke Dashboard</a>
+    <div class="button-container">
+        <button class="btn-kembali" onclick="window.history.back()">Kembali</button>
+    <footer>
+        <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
+    </footer>
 </body>
 </html>
 

@@ -4,7 +4,7 @@ body {
     background: linear-gradient(to right, #f4f6f9, #e6ecf3);
     margin: 0;
     padding: 0;
-    color: #333;
+    color: #000000;
   }
   
   header {
@@ -14,7 +14,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   header h2 {
@@ -115,6 +115,23 @@ body {
     cursor: pointer;
   }
   
+  /* Tombol Kembali */
+  .btn-kembali {
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-kembali:hover {
+    background-color: #002244;
+  }
+
   /* Footer */
   footer {
     background-color: #003366;
@@ -142,5 +159,4 @@ body {
     form input[type="text"] {
       width: 100%;
     }
-  }
-  
+  } 

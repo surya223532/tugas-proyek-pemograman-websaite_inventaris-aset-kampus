@@ -33,7 +33,6 @@ $result = mysqli_query($conn, $query);
 <body>
     <header>
         <h2> Daftar Aset</h2>
-        <button onclick="window.history.back()">Kembali</button>
     </header>
 
     <main>
@@ -72,6 +71,7 @@ $result = mysqli_query($conn, $query);
                     <?php } ?>
                 </tbody>
             </table>
+            <button class="btn-kembali" onclick="window.history.back()">Kembali</button>
         </section>
     </main>
 

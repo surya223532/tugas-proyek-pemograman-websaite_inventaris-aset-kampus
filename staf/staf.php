@@ -85,19 +85,24 @@ $statistik = mysqli_fetch_assoc($result_statistik);
     <script src="../assets/admin.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Tambahkan Chart.js -->
     <script>
-        function toggleSubmenu(id) {
-            var submenu = document.getElementById(id);
-            submenu.style.display = (submenu.style.display === "none" || submenu.style.display === "") ? "block" : "none";
-        }
+    function toggleSubmenu(id) {
+        var submenu = document.getElementById(id);
+        submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+    }
 
-        function showProfilePopup() {
-            document.getElementById('profile-popup').style.display = 'block';
-        }
+    function showProfilePopup() {
+        document.getElementById('profile-popup').style.display = 'block';
+        document.getElementById('popup-overlay').style.display = 'block';
+        console.log("Menampilkan popup dan overlay");
+    }
 
-        function closeProfilePopup() {
-            document.getElementById('profile-popup').style.display = 'none';
-        }
-    </script>
+    function closeProfilePopup() {
+        document.getElementById('profile-popup').style.display = 'none';
+        document.getElementById('popup-overlay').style.display = 'none';
+        console.log("Menutup popup dan overlay");
+    }
+</script>
+
 </head>
 <body>
     <!-- Sidebar -->

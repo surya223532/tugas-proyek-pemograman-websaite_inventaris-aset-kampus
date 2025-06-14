@@ -42,13 +42,56 @@ body {
   
   /* Kontainer Utama */
   .container {
-    max-width: 1000px;
+    width: 100%;
+    max-width: 96%; 
     margin: 40px auto;
-    padding: 30px;
+    padding: 30px 30px;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
   }
+
+  td.aksi {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #fff;
+  margin: 0 4px;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-icon.edit {
+  background-color: #198c34;
+}
+
+.btn-icon.edit:hover {
+  background-color: #095219;
+}
+
+.btn-icon.delete {
+  background-color: #9f0a19;
+}
+
+.btn-icon.delete:hover {
+  background-color: #5a0911;
+}
+
+.btn-icon i {
+  font-size: 16px;
+  color: #fff;
+  line-height: 1;
+}
   
   /* Judul */
   h2, h3 {
@@ -151,7 +194,7 @@ body {
   button {
     margin-top: 20px;
     padding: 10px 16px;
-    background-color: #003366;
+    background-color: #e68a00;
     color: white;
     border: none;
     border-radius: 6px;
@@ -159,7 +202,7 @@ body {
   }
   
   button:hover {
-    background-color: #002244;
+    background-color: #c07300;
   }
   
   /* Seksi Form */

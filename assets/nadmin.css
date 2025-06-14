@@ -23,7 +23,7 @@ h3 {
 h3 {
   color: #003366;
   font-size: 22px;
-  margin-bottom: 15px;
+  margin: 25px 0 15px 0;
 }
 
 table {
@@ -116,21 +116,74 @@ table td {
   background-color: #ff9933;
 }
 
+/* Tambahan untuk sidebar toggle */
+.sidebar {
+    width: 260px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 0;
+}
+
+.toggle-btn {
+    position: fixed;
+    top: 10px;
+    left: 260px;
+    z-index: 1001;
+    background-color: #ffa500;
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-btn:hover {
+  left: calc(260px + 5px); /* saat sidebar terbuka */
+}
+
+/* Posisi tombol saat sidebar tutup */
+body.sidebar-collapsed .toggle-btn {
+  left: 0;
+}
+
+body.sidebar-collapsed .toggle-btn:hover {
+  left: 5px;
+}
+
 /* Navbar */
 .navbar {
-  width: calc(100% - 250px);
+  width: calc(100% - 260px);
   background-color: #003366;
   padding: 15px 30px;
   position: sticky;
+  transition: all 0.3s ease;
   top: 0;
   z-index: 999;
-  margin-left: 250px;
+  margin-left: 260px;
   color: white;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+body.sidebar-collapsed .navbar {
+  margin-left: 0;
+  width: 100%;
 }
 
 .navbar h2 {
@@ -143,14 +196,24 @@ table td {
 
 /* Main Content */
 .main-content {
-  margin-left: 250px;
-  padding: 20px 30px;
-  width: calc(100% - 250px);
-  overflow-y: auto;
-  padding-bottom: 80px;
+  margin-left: 260px;
+  transition: all 0.3s ease;
+  width: calc(100% - 260px);
+  padding: 40px 20px;
+  box-sizing: border-box;
+  padding-bottom: 100px
+}
+
+body.sidebar-collapsed .main-content {
+  margin-left: 0;
+  width: 100%;
 }
 
 header {
+  position: fixed;
+  top: 0;
+  left: 260px;
+  width: calc(100% - 260px);
   background-color: #003366;
   color: white;
   padding: 20px 30px;
@@ -158,11 +221,20 @@ header {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 1000;
 }
+
+body.sidebar-collapsed header {
+  left: 0;
+  width: 100%;
+}
+
 
 header h2 {
   font-size: 24px;
   margin: 0;
+  padding-left: 30px;
 }
 
 header button {
@@ -330,13 +402,19 @@ footer {
   background-color: #003366;
   color: white;
   text-align: center;
-  padding: 15px 0;
+  padding: 10px 0;
   position: fixed;
-  width: calc(100% - 250px);
+  width: calc(100% - 260px);
   bottom: 0;
-  left: 250px;
+  left: 260px;
   font-size: 14px;
+  transition: all 0.3s ease;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+body.sidebar-collapsed footer {
+  left: 0;
+  width: 100%;
 }
 
 /* Scrollbar */

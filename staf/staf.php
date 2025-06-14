@@ -101,7 +101,7 @@ $statistik = mysqli_fetch_assoc($result_statistik);
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <h2>Manajemen Aset</h2>
         <ul>
             <li class="submenu-item">
@@ -124,6 +124,10 @@ $statistik = mysqli_fetch_assoc($result_statistik);
             </li>
         </ul>
     </div>
+
+    <button class="toggle-btn" id="sidebarToggle">
+        ☰
+    </button>
 
     <!-- Konten Utama -->
     <div class="main-content">
@@ -312,5 +316,19 @@ $statistik = mysqli_fetch_assoc($result_statistik);
         const ctxBar = document.getElementById('statistikDiagramBar').getContext('2d');
         new Chart(ctxBar, configBar);
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const sidebar = document.querySelector(".sidebar");
+        const body = document.body;
+
+        toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("collapsed");
+        body.classList.toggle("sidebar-collapsed");
+        });
+    });
+    </script>
+
 </body>
 </html>

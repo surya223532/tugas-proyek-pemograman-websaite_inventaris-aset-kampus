@@ -7,13 +7,14 @@ body {
     color: #333;
 }
 
+
 .container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 20px 30px;
-    background-color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 12px;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 25px 35px;
+  background-color: var(--putih);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 15px;
 }
 
 h2, h3 {
@@ -21,36 +22,35 @@ h2, h3 {
     margin-top: 0;
 }
 
-/* Form Pencarian & Tambah */
+/* Form Pencarian */
 form {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select {
-    width: 100%;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
+form input[type="text"] {
+  padding: 10px;
+  font-size: 15px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-button {
-    background-color: #ff9933;
-    color: white;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s;
+form button {
+  padding: 10px 20px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #e68a00;
+form button:hover {
+  background-color: #002244;
 }
 
 .search-form {
@@ -63,32 +63,40 @@ button:hover {
     flex: 1;
 }
 
-/* Tabel Pengguna */
+/* Tabel */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-table th, table td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
-    font-size: 14px;
+thead {
+  background-color: #003366;
+  color: white;
 }
 
-table th {
-    background-color: #003366;
-    color: white;
+thead th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 15px;
 }
 
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eee;
 }
 
-a {
-    color: #003366;
-    text-decoration: none;
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f5ff;
+  cursor: pointer;
 }
 
 a:hover {

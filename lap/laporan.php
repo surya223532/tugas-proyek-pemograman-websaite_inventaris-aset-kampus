@@ -188,6 +188,8 @@ $conn->close();
         window.print();
     }
 </script>
-
+<footer>
+    &copy; <?= date('Y') ?> Sistem Informasi Manajemen Aset
+</footer>
 </body>
 </html>

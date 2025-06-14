@@ -55,8 +55,8 @@
   /* Container utama */
   .container {
     background: var(--putih);
-    max-width: 900px;
-    margin: 40px auto 30px auto;
+    max-width: 100%;
+    margin: 40px 0 30px 0;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
     padding: 32px 36px;
@@ -108,6 +108,26 @@
   .form-section button[type="submit"]:hover {
     background-color: var(--biru-hover);
   }
+
+  /* Tombol Batal Edit */
+  .btn-batal {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--biru-tua);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      text-decoration: none; 
+      transition: background-color 0.3s ease;
+      margin-left: 10px;
+  }
+
+  .btn-batal:hover {
+      background-color: var(--biru-hover);
+  }
+
   
   /* Tabel */
   table {
@@ -146,6 +166,50 @@
     cursor: pointer;
   }
   
+  /* Tombol Edit dan Hapus */
+  .btn-edit, .btn-hapus {
+      margin: 0 5px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: white;
+      font-size: 14px;
+  }
+
+  .btn-edit {
+      background-color: #2b7e3f; /* Hijau */
+  }
+
+  .btn-edit:hover {
+      background-color: #195b27;
+  }
+
+  .btn-hapus {
+      background-color: #a53641; /* Merah */
+  }
+
+  .btn-hapus:hover {
+      background-color: #5b0f17;
+  }
+
+
+  /* Tombol Kembali */
+  .btn-kembali {
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-kembali:hover {
+    background-color: #002244;
+  }
+
   /* Footer */
   footer {
     background-color: var(--biru-tua);

@@ -1,7 +1,6 @@
-/* Gaya umum */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #f4f6f9, #e6ecf3);
+  background: linear-gradient(to right, #f9f5f4, #e6ecf3);
   margin: 0;
   padding: 0;
   color: #333;
@@ -12,7 +11,6 @@ header {
   color: white;
   padding: 20px 30px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -22,33 +20,19 @@ header h2 {
   margin: 0;
 }
 
-header button {
-  background-color: #ff9933;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-header button:hover {
-  background-color: #e68a00;
-}
-
+/*Main Content*/
 main {
   padding: 30px;
 }
 
-/* Judul */
+/*Judul Sub*/
 h3 {
   color: #003366;
   font-size: 22px;
   margin-bottom: 15px;
 }
 
-/* Form Pencarian */
+/*Form Pencarian*/
 form {
   margin-bottom: 20px;
   display: flex;
@@ -79,7 +63,7 @@ form button:hover {
   background-color: #002244;
 }
 
-/* Tabel */
+/*Tabel*/
 table {
   width: 100%;
   border-collapse: collapse;
@@ -115,7 +99,28 @@ tbody tr:hover {
   cursor: pointer;
 }
 
-/* Footer */
+/*Tombol Dashboard (di bawah tabel)*/
+.dashboard-container {
+  text-align: left;
+  margin: 30px 0;
+}
+
+.dashboard-container button {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.dashboard-container button:hover {
+  background-color: #002244;
+}
+
+/*Footer*/
 footer {
   background-color: #003366;
   color: white;
@@ -129,7 +134,7 @@ footer {
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Responsif */
+/*Responsif*/
 @media screen and (max-width: 600px) {
   header,
   main {
@@ -141,6 +146,14 @@ footer {
   }
 
   form input[type="text"] {
+    width: 100%;
+  }
+
+  .dashboard-container {
+    text-align: center;
+  }
+
+  .dashboard-container button {
     width: 100%;
   }
 }

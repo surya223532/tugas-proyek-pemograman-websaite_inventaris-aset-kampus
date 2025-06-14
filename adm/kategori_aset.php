@@ -128,8 +128,10 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
             <tr><td colspan="4">Belum ada kategori.</td></tr>
             <?php endif; ?>
         </table>
+    <div class="btn-container">
+        <a href="<?= $dashboard ?>" class="btn-kembali">Kembali</a>
     </div>
-    <a href="<?= $dashboard ?>" class="btn-kembali">⬅ Kembali ke Dashboard</a>
+    </div>
     <script>
         // Script untuk konfirmasi penghapusan
         document.querySelectorAll('a[href*="hapus"]').forEach(link => {

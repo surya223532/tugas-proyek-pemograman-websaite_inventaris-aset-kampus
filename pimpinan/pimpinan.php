@@ -89,31 +89,28 @@ include('../include/popup_profil.php');
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Tambahkan Chart.js -->
     <script src="../assets/admin.js" defer></script>
     <script>
-        function toggleSubmenu(id) {
-            var submenu = document.getElementById(id);
-            if (submenu.style.display === "none" || submenu.style.display === "") {
-                submenu.style.display = "block";
-            } else {
-                submenu.style.display = "none";
-            }
-        }
+    function toggleSubmenu(id) {
+        var submenu = document.getElementById(id);
+        submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+    }
 
-        function openProfilePopup() {
-            document.getElementById('profile-popup').style.display = 'block';
-        }
+    function showProfilePopup() {
+        document.getElementById('profile-popup').style.display = 'block';
+        document.getElementById('popup-overlay').style.display = 'block';
+        console.log("Menampilkan popup dan overlay");
+    }
 
-        function closeProfilePopup() {
-            document.getElementById('profile-popup').style.display = 'none';
-        }
+    function closeProfilePopup() {
+        document.getElementById('profile-popup').style.display = 'none';
+        document.getElementById('popup-overlay').style.display = 'none';
+        console.log("Menutup popup dan overlay");
+    }
+</script>
 
-        function showProfilePopup() {
-            document.getElementById('profile-popup').style.display = 'block';
-        }
-    </script>
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <h2>Manajemen Aset</h2>
         <ul>
             <li><a href="../lap/laporan.php">Laporan & Statistik</a></li>
@@ -135,8 +132,12 @@ include('../include/popup_profil.php');
         </ul>
     </div>
 
+    <button class="toggle-btn" id="sidebarToggle">
+        ☰
+    </button>
+
     <!-- Konten Utama -->
-    <div class="main-content">
+    <div class="main-content"> 
         <header>
             <h2>Dashboard Pimpinan</h2>
         </header>
@@ -200,37 +201,6 @@ include('../include/popup_profil.php');
         <footer>
             <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
         </footer>
-    </div>
-
-    <!-- Popup Profil -->
-    <div class="profile-popup" id="profile-popup">
-        <button onclick="closeProfilePopup()">&times;</button>
-        <h2>Profil Saya</h2>
-        <?php if (!empty($user)): ?>
-            <table>
-                <tr><td>Email</td><td><?= htmlspecialchars($user['email'] ?? 'Tidak tersedia') ?></td></tr>
-                <tr><td>Nama</td><td><?= htmlspecialchars($user['nama'] ?? 'Tidak tersedia') ?></td></tr>
-                <tr><td>Role</td><td><?= htmlspecialchars($user['role'] ?? 'Tidak tersedia') ?></td></tr>
-            </table>
-        <?php else: ?>
-            <p>Data pengguna tidak tersedia.</p>
-        <?php endif; ?>
-        <form method="post">
-            <input type="hidden" name="ubah_password" value="1">
-            <label>Password Lama:<br>
-                <input type="password" name="password_lama" required>
-            </label><br>
-            <label>Password Baru:<br>
-                <input type="password" name="password_baru" required>
-            </label><br>
-            <label>Konfirmasi Password Baru:<br>
-                <input type="password" name="konfirmasi" required>
-            </label><br>
-            <button type="submit">Ubah Password</button>
-        </form>
-        <?php if (isset($pesan)): ?>
-            <p><?= $pesan ?></p>
-        <?php endif; ?>
     </div>
 
     <script>
@@ -315,6 +285,19 @@ include('../include/popup_profil.php');
         // Render diagram kolom
         const ctxBar = document.getElementById('statistikDiagramBar').getContext('2d');
         new Chart(ctxBar, configBar);
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const sidebar = document.querySelector(".sidebar");
+        const body = document.body;
+
+        toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("collapsed");
+        body.classList.toggle("sidebar-collapsed");
+        });
+    });
     </script>
 </body>
 </html>

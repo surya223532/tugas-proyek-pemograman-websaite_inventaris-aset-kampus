@@ -20,12 +20,14 @@
   }
   
   .container {
-    max-width: 960px;
+    width: 100%;
+    max-width: 96%; /* atau 95% */
     margin: 40px auto;
-    padding: 40px;
-    background: var(--putih);
+    padding: 30px 40px;
+    background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
   }
   
   h2 {
@@ -214,4 +216,45 @@
       text-align: left;
     }
   }
-  
+
+ 
+  td.aksi {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #fff;
+    margin: 0 4px;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .btn-icon.edit {
+    background-color: #198c34;
+  }
+
+  .btn-icon.edit:hover {
+    background-color: #095219;
+  }
+
+  .btn-icon.delete {
+    background-color: #9f0a19;
+  }
+
+  .btn-icon.delete:hover {
+    background-color: #5a0911;
+  }
+
+  .btn-icon i {
+    font-size: 16px;
+    color: #fff;
+    line-height: 1;
+  }

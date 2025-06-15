@@ -48,12 +48,14 @@ $users = ($keyword != '') ?
     <meta charset="UTF-8">
     <title>Manajemen Pengguna</title>
     <link rel="stylesheet" href="../assets/manajemen_pengguna.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="header-biru">
         <h2>Manajemen Pengguna</h2>
+    </div>
 
+    <div class="container">
         <form method="get" class="search-form">
             <input type="text" name="search" placeholder="Cari nama atau email" value="<?= htmlspecialchars($keyword) ?>">
             <button type="submit">Cari</button>
@@ -88,19 +90,27 @@ $users = ($keyword != '') ?
                 <tr>
                     <td><?= htmlspecialchars($row['nama']) ?></td>
                     <td><?= htmlspecialchars($row['email']) ?></td>
-                    <td>********</td> <!-- Password tidak ditampilkan -->
+                    <td>********</td>
                     <td><?= htmlspecialchars($row['role']) ?></td>
                     <td>
-                        <a href="?reset=<?= $row['id_user'] ?>" onclick="return confirm('Reset password ke default?')">Reset</a> |
-                        <a href="?hapus=<?= $row['id_user'] ?>" onclick="return confirm('Yakin ingin menghapus pengguna ini?')">Hapus</a>
+                        <a href="?reset=<?= $row['id_user'] ?>" onclick="return confirm('Reset password ke default?')" title="Reset">
+                            <i class="fas fa-rotate-left"></i>
+                        </a>
+                        &nbsp;|&nbsp;
+                        <a href="?hapus=<?= $row['id_user'] ?>" onclick="return confirm('Yakin ingin menghapus pengguna ini?')" title="Hapus">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </td>
                 </tr>
                 <?php } ?>
             </tbody>
         </table>
-
         <br>
-        <a href="admin.php" class="back-btn">⬅ Kembali ke Admin</a>
+        <a href="admin.php" class="back-btn">Kembali</a>
     </div>
+
+    <footer class="footer-biru">
+        © 2025 Sistem Manajemen Aset Kampus
+    </footer>
 </body>
 </html>

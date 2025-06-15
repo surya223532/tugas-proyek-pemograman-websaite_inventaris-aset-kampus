@@ -94,6 +94,8 @@ if (isset($_GET['edit_aset'])) {
     <meta charset="UTF-8">
     <title>Pengelolaan Aset</title>
     <link rel="stylesheet" href="../assets/atur_aset.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+ 
 </head>
 <body>
     <div class="container">
@@ -181,10 +183,14 @@ if (isset($_GET['edit_aset'])) {
                             <td>Rp <?= number_format($aset_item['nilai_awal'], 0, ',', '.') ?></td>
                             <td><?= $aset_item['status'] ?></td>
                             <td><?= $aset_item['masa_manfaat'] ?> Tahun</td>
-                            <td>
-                                <a href="?edit_aset=<?= $aset_item['id_aset'] ?>">Edit</a> |
-                                <a href="?hapus_aset=<?= $aset_item['id_aset'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus aset ini?')">Hapus</a>
+                            <td class="aksi">
+                                <a href="?edit_aset=<?= $aset_item['id_aset'] ?>" class="btn-icon edit" title="Edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="?hapus_aset=<?= $aset_item['id_aset'] ?>" class="btn-icon delete" title="Hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus aset ini?')">
+                                <i class="fa-solid fa-trash"></i>
                             </td>
+
                         </tr>
                     <?php } ?>
                 </tbody>

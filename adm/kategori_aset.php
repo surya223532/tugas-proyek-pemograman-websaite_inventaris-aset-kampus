@@ -75,6 +75,7 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
     <meta charset="UTF-8">
     <title>Kategori Aset</title>
     <link rel="stylesheet" href="../assets/kategori_aset.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         table th, table td { text-align: left; }
     </style>
@@ -119,19 +120,23 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
                 <td><?= htmlspecialchars($row['id_kategori']) ?></td>
                 <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
                 <td><?= htmlspecialchars($row['deskripsi']) ?></td>
-                <td>
-                    <a href="?edit=<?= $row['id_kategori'] ?>">Edit</a> |
-                    <a href="?hapus=<?= $row['id_kategori'] ?>" onclick="return confirm('Yakin ingin menghapus kategori ini?')">Hapus</a>
+                <td class="aksi">
+                    <a href="?edit=<?= $row['id_kategori'] ?>" class="btn-icon edit" title="Edit">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    <a href="?hapus=<?= $row['id_kategori'] ?>" class="btn-icon delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus?')">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
                 </td>
+
             </tr>
             <?php endwhile; else: ?>
             <tr><td colspan="4">Belum ada kategori.</td></tr>
             <?php endif; ?>
         </table>
-    <div class="btn-container">
         <a href="<?= $dashboard ?>" class="btn-kembali">Kembali</a>
     </div>
-    </div>
+    
     <script>
         // Script untuk konfirmasi penghapusan
         document.querySelectorAll('a[href*="hapus"]').forEach(link => {

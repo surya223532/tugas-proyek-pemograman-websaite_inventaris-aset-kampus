@@ -1,44 +1,56 @@
-/* Gaya Umum */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #f4f6f9, #e6ecf3);
-    margin: 0;
-    padding: 0;
-    color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #f4f6f9, #e6ecf3);
+  margin: 0;
+  padding: 0;
+  color: #333;
 }
 
+/* Header Biru */
+.header-biru {
+  background-color: #003366;
+  padding: 20px;
+  text-align: left;
+  border-radius: 0 0 0px 0px;
+}
 
+.header-biru h2 {
+  color: white;
+  font-size: 26px;
+  margin: 0;
+}
+
+/* Container */
 .container {
   max-width: 1200px;
   margin: 30px auto;
   padding: 25px 35px;
-  background-color: var(--putih);
+  background-color: var(--putih, #ffffff);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border-radius: 15px;
 }
 
-h2, h3 {
-    color: #003366;
-    margin-top: 0;
+h3 {
+  color: #003366;
+  margin-top: 0;
 }
 
 /* Form Pencarian */
-form {
-  margin-bottom: 20px;
+.search-form {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  margin-bottom: 25px;
 }
 
-form input[type="text"] {
+.search-form input[type="text"] {
+  flex: 1;
   padding: 10px;
   font-size: 15px;
-  width: 250px;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
-form button {
+.search-form button {
   padding: 10px 20px;
   background-color: #003366;
   color: white;
@@ -49,18 +61,43 @@ form button {
   transition: background-color 0.3s ease;
 }
 
-form button:hover {
+.search-form button:hover {
   background-color: #002244;
 }
 
-.search-form {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+/* Form Tambah Pengguna */
+.form-tambah {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
-.search-form input[type="text"] {
-    flex: 1;
+.form-tambah input[type="text"],
+.form-tambah input[type="email"],
+.form-tambah input[type="password"],
+.form-tambah select {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.form-tambah button {
+  padding: 10px 20px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.form-tambah button:hover {
+  background-color: #002244;
 }
 
 /* Tabel */
@@ -99,20 +136,45 @@ tbody tr:hover {
   cursor: pointer;
 }
 
-a:hover {
-    text-decoration: underline;
+table a {
+  color: #003366;
+  text-decoration: none;
 }
 
+table a:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}
+
+table i {
+  font-size: 16px;
+}
+
+/* Tombol kembali tanpa ikon */
 .back-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 8px 16px;
-    background-color: #003366;
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #003366;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 .back-btn:hover {
-    background-color: #002244;
+  background-color: #002244;
+}
+
+.back-btn i {
+  display: none;
+}
+
+/* Footer */
+.footer-biru {
+  background-color: #003366;
+  color: white;
+  text-align: center;
+  padding: 15px 10px;
+  margin-top: 50px;
+  font-size: 14px;
 }

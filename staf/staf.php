@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('../include/koneksi.php'); // koneksi ke database 
+include('../include/popup_profil.php');
 $allowed_roles = ['staf']; // bisa ditentukan sesuai kebutuhan
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
@@ -23,7 +24,7 @@ if (isset($_SESSION['email'])) {
         $user = []; // Jika tidak ada data, set $user sebagai array kosong
     }
 }
-include('../include/popup_profil.php');
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ubah_password'])) {
     $password_lama = $_POST['password_lama'];

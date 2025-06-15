@@ -3,10 +3,21 @@ session_start();
 include('../include/koneksi.php'); // koneksi ke database 
 $allowed_roles = ['admin', 'staf'];
 
+$allowed_roles = ['admin', 'staf'];
+
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
-    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
+    header("Location: login.php"); 
     exit();
 }
+
+if ($_SESSION['role'] === 'admin') {
+    $dashboard = '../adm/admin.php';
+} elseif ($_SESSION['role'] === 'staf') {
+    $dashboard = '../staf/staf.php';
+} else {
+    $dashboard = '../dashboard.php'; // fallback
+}
+
 
 
 
@@ -180,7 +191,8 @@ if (isset($_GET['edit_aset'])) {
             </table>
         </div>
 
-        <button onclick="window.history.back()">Kembali</button>
+        <button class="btn-kembali" onclick="window.location.href='<?= $dashboard ?>'">Kembali</button>
+
     </div>
 </body>
 </html>

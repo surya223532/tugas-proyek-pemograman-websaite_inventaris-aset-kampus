@@ -155,7 +155,8 @@ $result = $conn->query($sql);
         </tbody>
     </table>
     <div class="button-container">
-        <button class="btn-kembali" onclick="window.history.back()">Kembali</button>
+        <button class="btn-kembali" onclick="window.location.href='<?= $dashboard ?>'">Kembali</button>
+
     <footer>
         <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
     </footer>

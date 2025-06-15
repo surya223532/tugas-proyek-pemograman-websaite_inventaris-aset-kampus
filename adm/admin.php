@@ -72,7 +72,7 @@ $result_tabel = mysqli_query($conn, $query_tabel);
             <li class="submenu-item">
                 <a href="javascript:void(0);" onclick="toggleSubmenu('pengaturan')">Pengaturan</a>
                 <ul class="submenu" id="pengaturan">
-                    <li><a href="setting1.php">Setting 1</a></li>
+                    
                     <li><a href="/siman/logout.php">Logout</a></li>
                 </ul>
             </li>

@@ -39,14 +39,16 @@ while ($aset = mysqli_fetch_assoc($result_aset)) {
     mysqli_query($conn, $query_simpan);
 }
 
-// Ambil data penyusutan
+// Ambil data penyusutan dengan menambahkan tahun perolehan
 $query_penyusutan = "
-    SELECT p.*, a.nama_aset, a.nilai_awal, a.masa_manfaat, k.nama_kategori AS kategori, l.nama_lokasi AS lokasi
+    SELECT p.*, a.nama_aset, a.nilai_awal, a.masa_manfaat, a.tanggal_perolehan, 
+           YEAR(a.tanggal_perolehan) AS tahun_perolehan,
+           k.nama_kategori AS kategori, l.nama_lokasi AS lokasi
     FROM penyusutan p
     JOIN aset a ON p.id_aset = a.id_aset
     JOIN kategori k ON a.kategori_id = k.id_kategori
     JOIN lokasi l ON a.lokasi_id = l.id_lokasi
-    ORDER BY p.tahun DESC, a.nama_aset
+    ORDER BY a.tanggal_perolehan DESC, a.nama_aset
 ";
 $result_penyusutan = mysqli_query($conn, $query_penyusutan);
 
@@ -82,11 +84,12 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
                     <th>Nama Aset</th>
                     <th>Kategori</th>
                     <th>Lokasi</th>
-                    <th>Tahun</th>
+                    <th>Tahun Perolehan</th>
                     <th>Nilai Awal</th>
                     <th>Nilai Penyusutan</th>
                     <th>Nilai Sisa</th>
                     <th>Masa Manfaat (tahun)</th>
+                    <th>Tahun Penyusutan</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,11 +98,12 @@ $dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/sta
                 <td><?= htmlspecialchars($penyusutan['nama_aset']) ?></td>
                 <td><?= htmlspecialchars($penyusutan['kategori']) ?></td>
                 <td><?= htmlspecialchars($penyusutan['lokasi']) ?></td>
-                <td><?= $penyusutan['tahun'] ?></td>
+                <td><?= $penyusutan['tahun_perolehan'] ?></td>
                 <td>Rp<?= number_format($penyusutan['nilai_awal'], 2, ',', '.') ?></td>
                 <td>Rp<?= number_format($penyusutan['nilai_susut'], 2, ',', '.') ?></td>
                 <td>Rp<?= number_format($penyusutan['nilai_sisa'], 2, ',', '.') ?></td>
                 <td><?= htmlspecialchars($penyusutan['masa_manfaat']) ?> tahun</td>
+                <td><?= $penyusutan['tahun'] ?></td>
             </tr>
             <?php endwhile ?>
             </tbody>

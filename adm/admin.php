@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('../include/koneksi.php'); // koneksi ke database 
+include('../include/popup_profil.php');
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     header("Location: /siman/login.php");
     exit();
@@ -72,7 +73,7 @@ $result_tabel = mysqli_query($conn, $query_tabel);
             <li class="submenu-item">
                 <a href="javascript:void(0);" onclick="toggleSubmenu('pengaturan')">Pengaturan</a>
                 <ul class="submenu" id="pengaturan">
-                    
+                    <li><a href="javascript:void(0);" onclick="showProfilePopup()">Profil</a></li>
                     <li><a href="/siman/logout.php">Logout</a></li>
                 </ul>
             </li>

@@ -1,4 +1,16 @@
-<!-- filepath: c:\xampp\htdocs\siman\include\popup_profil.php -->
+<?php
+session_start();
+include_once('../include/koneksi.php'); // pastikan file koneksi dipanggil
+
+if (isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+    $query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email' LIMIT 1");
+    $user = mysqli_fetch_assoc($query_user);
+} else {
+    $user = null;
+}
+?>
+
 <style>
     .overlay {
         position: fixed;
@@ -64,7 +76,7 @@ if (!isset($conn)) {
     die('Koneksi database tidak tersedia.');
 }
 
-if (empty($user)) {
+if ($user === null) {
     $pesan = 'Data pengguna tidak tersedia.';
 } else {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ubah_password'])) {
@@ -78,7 +90,7 @@ if (empty($user)) {
         } elseif ($password_baru !== $konfirmasi) {
             $pesan = 'Konfirmasi password baru tidak cocok!';
         } else {
-            // Simpan password baru langsung (plaintext, tidak disarankan untuk produksi)
+            // Simpan password baru langsung (plaintext, tidak disarankan)
             $update = mysqli_query($conn, "UPDATE users SET password='$password_baru' WHERE email='{$user['email']}'");
             $pesan = $update ? 'Password berhasil diubah!' : 'Gagal mengubah password. Error: ' . mysqli_error($conn);
         }

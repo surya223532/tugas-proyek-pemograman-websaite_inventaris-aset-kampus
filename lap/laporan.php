@@ -7,6 +7,14 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
     header("Location: login.php");
     exit();
 }
+
+// Fungsi untuk format Rupiah yang aman
+function formatRupiah($value) {
+    if ($value === null || $value === '') {
+        return 'Rp 0';
+    }
+    return 'Rp ' . number_format((float)$value, 0, ',', '.');
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -24,17 +32,16 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
 <h2>Laporan Aset dan Penyusutan</h2>
 
 <?php
-include('../include/koneksi.php');
 $query = "
     SELECT 
         a.id_aset, 
         a.nama_aset, 
         a.tanggal_perolehan, 
-        a.nilai_awal, 
+        COALESCE(a.nilai_awal, 0) as nilai_awal, 
         a.status, 
         k.nama_kategori, 
         l.nama_lokasi, 
-        p.nilai_susut,
+        COALESCE(p.nilai_susut, 0) as nilai_susut,
         a.masa_manfaat
     FROM aset a
     LEFT JOIN kategori k ON a.kategori_id = k.id_kategori
@@ -78,19 +85,19 @@ if ($result->num_rows > 0) {
                 <td>{$row['id_aset']}</td>
                 <td>{$row['nama_aset']}</td>
                 <td>{$row['tanggal_perolehan']}</td>
-                <td>Rp " . number_format($row['nilai_awal'], 0, ',', '.') . "</td>
+                <td>" . formatRupiah($row['nilai_awal']) . "</td>
                 <td>{$row['status']}</td>
                 <td>{$row['nama_kategori']}</td>
                 <td>{$row['nama_lokasi']}</td>
-                <td>Rp " . number_format($row['nilai_susut'], 0, ',', '.') . "</td>
+                <td>" . formatRupiah($row['nilai_susut']) . "</td>
                 <td>{$row['masa_manfaat']} Tahun</td>
               </tr>";
     }
 
     $persentasePenyusutan = ($totalNilaiAset > 0) ? ($totalPenyusutan / $totalNilaiAset) * 100 : 0;
 
-    echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Total Penyusutan</td><td colspan='2'>Rp " . number_format($totalPenyusutan, 0, ',', '.') . "</td></tr>";
-    echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Total Nilai Aset</td><td colspan='2'>Rp " . number_format($totalNilaiAset, 0, ',', '.') . "</td></tr>";
+    echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Total Penyusutan</td><td colspan='2'>" . formatRupiah($totalPenyusutan) . "</td></tr>";
+    echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Total Nilai Aset</td><td colspan='2'>" . formatRupiah($totalNilaiAset) . "</td></tr>";
     echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Persentase Penyusutan</td><td colspan='2'>" . number_format($persentasePenyusutan, 2) . "%</td></tr>";
     echo "</tbody></table>";
 
@@ -159,4 +166,4 @@ $conn->close();
     &copy; <?= date('Y') ?> Sistem Informasi Manajemen Aset
 </footer>
 </body>
-</html>
+</html>s

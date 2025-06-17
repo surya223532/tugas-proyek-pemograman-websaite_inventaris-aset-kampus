@@ -51,14 +51,14 @@ $result_tabel = mysqli_query($conn, $query_tabel);
     <div class="sidebar" id="sidebar">
         <h2>Manajemen Aset</h2>
         <ul>
-            <li><a href="manajemen_pengguna.php">Manajemen Pengguna</a></li>
+            <li><a href="../fitur/manajemen_pengguna.php">Manajemen Pengguna</a></li>
             <li class="submenu-item">
                 <a href="javascript:void(0);" onclick="toggleSubmenu('aset-lengkap')">Manajemen Aset</a>
                 <ul class="submenu" id="aset-lengkap">
-                    <li><a href="atur_aset.php">Atur Aset</a></li>
-                    <li><a href="kategori_aset.php">Kategori Aset</a></li>
-                    <li><a href="lokasi_aset.php">Lokasi Aset</a></li>
-                    <li><a href="lihat_aset.php">Lihat Aset</a></li>
+                    <li><a href="../fitur/atur_aset.php">Atur Aset</a></li>
+                    <li><a href="../fitur/kategori_aset.php">Kategori Aset</a></li>
+                    <li><a href="../fitur/lokasi_aset.php">Lokasi Aset</a></li>
+                    <li><a href="../fitur/lihat_aset.php">Lihat Aset</a></li>
                 </ul>
             </li>
             <li><a href="../fitur/penyusutan.php">Kelola Penyusutan</a></li>

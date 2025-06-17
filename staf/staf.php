@@ -113,10 +113,10 @@ $statistik = mysqli_fetch_assoc($result_statistik);
             <li class="submenu-item">
                 <a href="javascript:void(0);" onclick="toggleSubmenu('aset-lengkap')">Manajemen Aset</a>
                 <ul class="submenu" id="aset-lengkap">
-                    <li><a href="../adm/atur_aset.php">Atur Aset</a></li>
-                    <li><a href="../adm/kategori_aset.php">Kategori Aset</a></li>
-                    <li><a href="../adm/lokasi_aset.php">Lokasi Aset</a></li>
-                    <li><a href="../adm/lihat_aset.php">Lihat Aset</a></li>
+                    <li><a href="../fitur/atur_aset.php">Atur Aset</a></li>
+                    <li><a href="../fitur/kategori_aset.php">Kategori Aset</a></li>
+                    <li><a href="../fitur/lokasi_aset.php">Lokasi Aset</a></li>
+                    <li><a href="../fitur/lihat_aset.php">Lihat Aset</a></li>
                 </ul>
             </li>
             <li><a href="../fitur/penyusutan.php">Kelola Penyusutan</a></li>

@@ -106,7 +106,7 @@ $users = ($keyword != '') ?
             </tbody>
         </table>
         <br>
-        <a href="admin.php" class="back-btn">Kembali</a>
+        <a href="../adm/admin.php" class="back-btn">Kembali</a>
     </div>
 
     <footer class="footer-biru">

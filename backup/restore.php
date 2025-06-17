@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['backup_file'])) {
 <body>
     <div class="main-content">
         <header>
-            <a href="/pinjam/logout.php">Logout</a>
+            <a href="../adm/admin.php" class="back-btn">Kembali</a>
         </header>
 
         <main>

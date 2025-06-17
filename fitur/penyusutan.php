@@ -121,7 +121,7 @@ function formatRupiah($angka) {
         <div class="form-actions">
             <button onclick="window.location.href='<?= ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php' ?>'" 
                     class="btn btn-secondary">
-                Kembali ke Dashboard
+                Kembali 
             </button>
         </div>
     </main>

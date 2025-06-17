@@ -164,5 +164,14 @@ $result = $conn->query("SELECT * FROM kategori ORDER BY id_kategori DESC");
         });
     });
 </script>
-
+    <!-- Kembali Button - Recommended Position -->
+    <div class="form-actions text-end mb-4">
+        <button onclick="window.location.href='<?= 
+            ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : 
+            (($_SESSION['role'] === 'pimpinan') ? '../pimpinan/pimpinan.php' : '../staf/staf.php') 
+        ?>'" 
+        class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
+        </button>
+    </div>
 <?php include('../include/footer.php'); ?>

@@ -16,6 +16,36 @@ function formatRupiah($value) {
     }
     return 'Rp ' . number_format((float)$value, 0, ',', '.');
 }
+
+// Ambil parameter filter dari URL
+$kategori_filter = isset($_GET['kategori']) ? $_GET['kategori'] : '';
+$lokasi_filter = isset($_GET['lokasi']) ? $_GET['lokasi'] : '';
+$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
+$search_query = isset($_GET['search']) ? $_GET['search'] : '';
+$tanggal_mulai = isset($_GET['tanggal_mulai']) ? $_GET['tanggal_mulai'] : '';
+$tanggal_akhir = isset($_GET['tanggal_akhir']) ? $_GET['tanggal_akhir'] : '';
+
+// Ambil nama kategori untuk ditampilkan di PDF
+$nama_kategori_filter = '';
+if (!empty($kategori_filter)) {
+    $kategori_query = "SELECT nama_kategori FROM kategori WHERE id_kategori = '" . $conn->real_escape_string($kategori_filter) . "'";
+    $kategori_result = $conn->query($kategori_query);
+    if ($kategori_result->num_rows > 0) {
+        $kategori_row = $kategori_result->fetch_assoc();
+        $nama_kategori_filter = $kategori_row['nama_kategori'];
+    }
+}
+
+// Juga ambil nama lokasi untuk ditampilkan di PDF
+$nama_lokasi_filter = '';
+if (!empty($lokasi_filter)) {
+    $lokasi_query = "SELECT nama_lokasi FROM lokasi WHERE id_lokasi = '" . $conn->real_escape_string($lokasi_filter) . "'";
+    $lokasi_result = $conn->query($lokasi_query);
+    if ($lokasi_result->num_rows > 0) {
+        $lokasi_row = $lokasi_result->fetch_assoc();
+        $nama_lokasi_filter = $lokasi_row['nama_lokasi'];
+    }
+}
 ?>
 
 <?php include('../include/header.php'); ?>
@@ -32,7 +62,76 @@ function formatRupiah($value) {
     </header>
 
     <main>
+        <!-- Form Filter dan Pencarian -->
+        <div class="filter-container">
+            <form method="GET" action="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="kategori">Kategori:</label>
+                        <select id="kategori" name="kategori" class="form-control">
+                            <option value="">Semua Kategori</option>
+                            <?php
+                            $kategori_query = "SELECT * FROM kategori";
+                            $kategori_result = $conn->query($kategori_query);
+                            while ($kategori = $kategori_result->fetch_assoc()) {
+                                $selected = ($kategori_filter == $kategori['id_kategori']) ? 'selected' : '';
+                                echo "<option value='{$kategori['id_kategori']}' $selected>{$kategori['nama_kategori']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lokasi">Lokasi:</label>
+                        <select id="lokasi" name="lokasi" class="form-control">
+                            <option value="">Semua Lokasi</option>
+                            <?php
+                            $lokasi_query = "SELECT * FROM lokasi";
+                            $lokasi_result = $conn->query($lokasi_query);
+                            while ($lokasi = $lokasi_result->fetch_assoc()) {
+                                $selected = ($lokasi_filter == $lokasi['id_lokasi']) ? 'selected' : '';
+                                echo "<option value='{$lokasi['id_lokasi']}' $selected>{$lokasi['nama_lokasi']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" class="form-control">
+                            <option value="">Semua Status</option>
+                            <option value="aktif" <?= ($status_filter == 'aktif') ? 'selected' : '' ?>>Aktif</option>
+                            <option value="non-aktif" <?= ($status_filter == 'non-aktif') ? 'selected' : '' ?>>Non-Aktif</option>
+                            <option value="dijual" <?= ($status_filter == 'dijual') ? 'selected' : '' ?>>Dalam perbaikan</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tanggal_mulai">Tanggal Mulai:</label>
+                        <input type="date" id="tanggal_mulai" name="tanggal_mulai" class="form-control" value="<?= htmlspecialchars($tanggal_mulai) ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tanggal_akhir">Tanggal Akhir:</label>
+                        <input type="date" id="tanggal_akhir" name="tanggal_akhir" class="form-control" value="<?= htmlspecialchars($tanggal_akhir) ?>">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group search-group">
+                        <label for="search">Pencarian:</label>
+                        <input type="text" id="search" name="search" class="form-control" placeholder="Cari nama aset..." value="<?= htmlspecialchars($search_query) ?>">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Cari</button>
+                        <button type="button" onclick="resetFilter()" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <?php
+        // Bangun query dengan filter
         $query = "
             SELECT 
                 a.id_aset, 
@@ -48,8 +147,37 @@ function formatRupiah($value) {
             LEFT JOIN kategori k ON a.kategori_id = k.id_kategori
             LEFT JOIN lokasi l ON a.lokasi_id = l.id_lokasi
             LEFT JOIN penyusutan p ON a.id_aset = p.id_aset
+            WHERE 1=1
         ";
-
+        
+        // Tambahkan kondisi filter jika ada
+        if (!empty($kategori_filter)) {
+            $query .= " AND a.kategori_id = '" . $conn->real_escape_string($kategori_filter) . "'";
+        }
+        
+        if (!empty($lokasi_filter)) {
+            $query .= " AND a.lokasi_id = '" . $conn->real_escape_string($lokasi_filter) . "'";
+        }
+        
+        if (!empty($status_filter)) {
+            $query .= " AND a.status = '" . $conn->real_escape_string($status_filter) . "'";
+        }
+        
+        if (!empty($search_query)) {
+            $query .= " AND a.nama_aset LIKE '%" . $conn->real_escape_string($search_query) . "%'";
+        }
+        
+        // Tambahkan filter tanggal jika diisi
+        if (!empty($tanggal_mulai)) {
+            $query .= " AND a.tanggal_perolehan >= '" . $conn->real_escape_string($tanggal_mulai) . "'";
+        }
+        
+        if (!empty($tanggal_akhir)) {
+            $query .= " AND a.tanggal_perolehan <= '" . $conn->real_escape_string($tanggal_akhir) . "'";
+        }
+        
+        $query .= " ORDER BY a.nama_aset";
+        
         $result = $conn->query($query);
         $labels = [];
         $nilai_awal_list = [];
@@ -125,6 +253,20 @@ function formatRupiah($value) {
         <?php endif; ?>
 
         <script>
+        // Fungsi untuk reset filter
+        function resetFilter() {
+            // Reset semua nilai form ke default
+            document.getElementById('kategori').value = '';
+            document.getElementById('lokasi').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('search').value = '';
+            document.getElementById('tanggal_mulai').value = '';
+            document.getElementById('tanggal_akhir').value = '';
+            
+            // Submit form kosong untuk reset filter
+            document.forms[0].submit();
+        }
+        
         const labels = <?= $json_labels ?? '[]' ?>;
         const nilaiAwal = <?= $json_nilai_awal ?? '[]' ?>;
         const nilaiSusut = <?= $json_nilai_susut ?? '[]' ?>;
@@ -252,17 +394,50 @@ function formatRupiah($value) {
             doc.setFontSize(18);
             doc.text("Laporan Aset dan Penyusutan", 14, 15);
             
+            // Add filter information
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            
+            let filterText = "Filter: ";
+            let filters = [];
+            
+            <?php if (!empty($nama_kategori_filter)): ?>
+                filters.push("Kategori: <?= htmlspecialchars($nama_kategori_filter) ?>");
+            <?php endif; ?>
+            
+            <?php if (!empty($nama_lokasi_filter)): ?>
+                filters.push("Lokasi: <?= htmlspecialchars($nama_lokasi_filter) ?>");
+            <?php endif; ?>
+            
+            <?php if (!empty($status_filter)): ?>
+                filters.push("Status: <?= htmlspecialchars($status_filter) ?>");
+            <?php endif; ?>
+            
+            <?php if (!empty($search_query)): ?>
+                filters.push("Pencarian: <?= htmlspecialchars($search_query) ?>");
+            <?php endif; ?>
+            
+            <?php if (!empty($tanggal_mulai) || !empty($tanggal_akhir)): ?>
+                filters.push("Periode: <?= !empty($tanggal_mulai) ? htmlspecialchars($tanggal_mulai) : 'Awal' ?> hingga <?= !empty($tanggal_akhir) ? htmlspecialchars($tanggal_akhir) : 'Akhir' ?>");
+            <?php endif; ?>
+            
+            if (filters.length === 0) {
+                filterText += "Semua Data";
+            } else {
+                filterText += filters.join(", ");
+            }
+            
+            doc.text(filterText, 14, 22);
+            
             // Add current date
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             const today = new Date().toLocaleDateString('id-ID', options);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text(`Dicetak pada: ${today}`, 14, 22);
+            doc.text(`Dicetak pada: ${today}`, 14, 29);
             
             // Add table
             doc.autoTable({ 
                 html: '#tabelLaporan', 
-                startY: 30,
+                startY: 35,
                 styles: {
                     fontSize: 8,
                     cellPadding: 2,
@@ -292,7 +467,7 @@ function formatRupiah($value) {
         function printPage() {
             window.print();
         }
-    </script>
+        </script>
     </main>
 
     <footer>

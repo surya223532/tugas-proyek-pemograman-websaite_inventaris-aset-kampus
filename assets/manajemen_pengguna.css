@@ -178,3 +178,30 @@ table i {
   margin-top: 50px;
   font-size: 14px;
 }
+/* Dalam file CSS Anda */
+.aksi {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.btn-icon {
+    display: inline-block;
+    padding: 5px 8px;
+    margin: 0 3px;
+    border-radius: 4px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-icon.reset {
+    background-color: #ffc107;
+}
+
+.btn-icon.delete {
+    background-color: #dc3545;
+}
+
+.btn-icon:hover {
+    opacity: 0.8;
+}

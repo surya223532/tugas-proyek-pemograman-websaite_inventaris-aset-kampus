@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../include/koneksi.php'); // koneksi ke database 
+include('../include/koneksi.php');
 include('../include/popup_profil.php');
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     header("Location: /siman/login.php");
@@ -36,218 +36,158 @@ $query_tabel = "
 $result_tabel = mysqli_query($conn, $query_tabel);
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
-    <link rel="stylesheet" href="../assets/nadmin.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Tambahkan Chart.js -->
-    <script src="../assets/admin.js" defer></script>
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <h2>Manajemen Aset</h2>
-        <ul>
-            <li><a href="../fitur/manajemen_pengguna.php">Manajemen Pengguna</a></li>
-            <li class="submenu-item">
-                <a href="javascript:void(0);" onclick="toggleSubmenu('aset-lengkap')">Manajemen Aset</a>
-                <ul class="submenu" id="aset-lengkap">
-                    <li><a href="../fitur/atur_aset.php">Atur Aset</a></li>
-                    <li><a href="../fitur/kategori_aset.php">Kategori Aset</a></li>
-                    <li><a href="../fitur/lokasi_aset.php">Lokasi Aset</a></li>
-                    <li><a href="../fitur/lihat_aset.php">Lihat Aset</a></li>
-                </ul>
-            </li>
-            <li><a href="../fitur/penyusutan.php">Kelola Penyusutan</a></li>
-            <li><a href="../lap/laporan.php">Laporan & Statistik</a></li>
-            <li class="submenu-item">
-                <a href="javascript:void(0);" onclick="toggleSubmenu('backup-restore')">Backup dan Restore</a>
-                <ul class="submenu" id="backup-restore">
-                    <li><a href="../backup/backup.php">Backup Data</a></li>
-                    <li><a href="../backup/restore.php">Restore Data</a></li>
-                </ul>
-            </li>
-            <li class="submenu-item">
-                <a href="javascript:void(0);" onclick="toggleSubmenu('pengaturan')">Pengaturan</a>
-                <ul class="submenu" id="pengaturan">
-                    <li><a href="javascript:void(0);" onclick="showProfilePopup()">Profil</a></li>
-                    <li><a href="/siman/logout.php">Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+<?php include('../include/header.php'); ?>
+<?php include('../include/sidebar_admin.php'); ?>
 
-    <button class="toggle-btn" id="sidebarToggle">
-        ☰
-    </button>
+<!-- Konten Utama -->
+<div class="main-content">
+    <header>
+        <h2>Dashboard Admin</h2>
+    </header>
 
-    <!-- Konten Utama -->
-    <div class="main-content">
-        <header>
-            <h2>Dashboard Admin</h2>
-        </header>
-
-        <main>
-            <!-- Tabel Aset -->
-            <section>
-                <h3>Daftar Aset</h3>
-                <div class="table-container">
-                    <table style="width: 100%; border-collapse: collapse; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
-                        <thead>
+    <main>
+        <!-- Tabel Aset -->
+        <section>
+            <h3>Daftar Aset</h3>
+            <div class="table-container">
+                <table style="width: 100%; border-collapse: collapse; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                    <thead>
+                        <tr>
+                            <th>ID Aset</th>
+                            <th>Nama Aset</th>
+                            <th>Kategori</th>
+                            <th>Lokasi</th>
+                            <th>Tanggal Perolehan</th>
+                            <th>Nilai Awal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = mysqli_fetch_assoc($result_tabel)) { ?>
                             <tr>
-                                <th>ID Aset</th>
-                                <th>Nama Aset</th>
-                                <th>Kategori</th>
-                                <th>Lokasi</th>
-                                <th>Tanggal Perolehan</th>
-                                <th>Nilai Awal</th>
-                                <th>Status</th>
+                                <td><?= $row['id_aset'] ?></td>
+                                <td><?= $row['nama_aset'] ?></td>
+                                <td><?= $row['nama_kategori'] ?></td>
+                                <td><?= $row['nama_lokasi'] ?></td>
+                                <td><?= $row['tanggal_perolehan'] ?></td>
+                                <td>Rp <?= number_format($row['nilai_awal'], 0, ',', '.') ?></td>
+                                <td><?= $row['status'] ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($row = mysqli_fetch_assoc($result_tabel)) { ?>
-                                <tr>
-                                    <td><?= $row['id_aset'] ?></td>
-                                    <td><?= $row['nama_aset'] ?></td>
-                                    <td><?= $row['nama_kategori'] ?></td>
-                                    <td><?= $row['nama_lokasi'] ?></td>
-                                    <td><?= $row['tanggal_perolehan'] ?></td>
-                                    <td>Rp <?= number_format($row['nilai_awal'], 0, ',', '.') ?></td>
-                                    <td><?= $row['status'] ?></td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-            <!-- Statistik Aset -->
-            <section>
-                <h3>Statistik Aset</h3>
-                <div>
-                    <p>Total Aset: <?= $statistik['total_aset'] ?></p>
-                    <p>Total Nilai Awal: Rp <?= number_format($statistik['total_nilai_awal'], 0, ',', '.') ?></p>
-                    <p>Total Nilai Penyusutan: Rp <?= number_format($statistik['total_nilai_susut'], 0, ',', '.') ?></p>
-                </div>
-            </section>
+        <!-- Statistik Aset -->
+        <section>
+            <h3>Statistik Aset</h3>
+            <div>
+                <p>Total Aset: <?= $statistik['total_aset'] ?></p>
+                <p>Total Nilai Awal: Rp <?= number_format($statistik['total_nilai_awal'], 0, ',', '.') ?></p>
+                <p>Total Nilai Penyusutan: Rp <?= number_format($statistik['total_nilai_susut'], 0, ',', '.') ?></p>
+            </div>
+        </section>
 
-            <!-- Diagram Statistik -->
-            <section>
-                <h3>Diagram Statistik Aset</h3>
-                <div class="diagram-container">
-                    <!-- Diagram Pie -->
-                    <canvas id="statistikDiagramPie" width="400" height="400"></canvas>
-                    <!-- Diagram Kolom -->
-                    <canvas id="statistikDiagramBar" width="400" height="400"></canvas>
-                </div>
-            </section>
-        </main>
+        <!-- Diagram Statistik -->
+        <section>
+            <h3>Diagram Statistik Aset</h3>
+            <div class="diagram-container">
+                <!-- Diagram Pie -->
+                <canvas id="statistikDiagramPie" width="400" height="400"></canvas>
+                <!-- Diagram Kolom -->
+                <canvas id="statistikDiagramBar" width="400" height="400"></canvas>
+            </div>
+        </section>
+    </main>
 
-        <footer>
-            <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
-        </footer>
-    </div>
+    <footer>
+        <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
+    </footer>
+</div>
 
-    <script>
-        // Data untuk diagram pie
-        const dataPie = {
-            labels: ['Total Aset', 'Total Nilai Awal', 'Total Nilai Penyusutan'],
-            datasets: [{
-                label: 'Statistik Aset',
-                data: [
-                    <?= $statistik['total_aset'] ?>, 
-                    <?= $statistik['total_nilai_awal'] ?>, 
-                    <?= $statistik['total_nilai_susut'] ?>
-                ],
-                backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)'],
-                borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
-                borderWidth: 1
-            }]
-        };
+<script>
+    // Data untuk diagram pie
+    const dataPie = {
+        labels: ['Total Aset', 'Total Nilai Awal', 'Total Nilai Penyusutan'],
+        datasets: [{
+            label: 'Statistik Aset',
+            data: [
+                <?= $statistik['total_aset'] ?>, 
+                <?= $statistik['total_nilai_awal'] ?>, 
+                <?= $statistik['total_nilai_susut'] ?>
+            ],
+            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)'],
+            borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
+            borderWidth: 1
+        }]
+    };
 
-        // Konfigurasi diagram pie
-        const configPie = {
-            type: 'pie',
-            data: dataPie,
-            options: {
-                responsive: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Statistik Aset (Pie Chart)'
-                    }
+    // Konfigurasi diagram pie
+    const configPie = {
+        type: 'pie',
+        data: dataPie,
+        options: {
+            responsive: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Statistik Aset (Pie Chart)'
                 }
             }
-        };
+        }
+    };
 
-        // Data untuk diagram kolom
-        const dataBar = {
-            labels: ['Total Aset', 'Total Nilai Awal', 'Total Nilai Penyusutan'],
-            datasets: [{
-                label: 'Statistik Aset',
-                data: [
-                    <?= $statistik['total_aset'] ?>, 
-                    <?= $statistik['total_nilai_awal'] ?>, 
-                    <?= $statistik['total_nilai_susut'] ?>
-                ],
-                backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)'],
-                borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
-                borderWidth: 1
-            }]
-        };
+    // Data untuk diagram kolom
+    const dataBar = {
+        labels: ['Total Aset', 'Total Nilai Awal', 'Total Nilai Penyusutan'],
+        datasets: [{
+            label: 'Statistik Aset',
+            data: [
+                <?= $statistik['total_aset'] ?>, 
+                <?= $statistik['total_nilai_awal'] ?>, 
+                <?= $statistik['total_nilai_susut'] ?>
+            ],
+            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)'],
+            borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
+            borderWidth: 1
+        }]
+    };
 
-        // Konfigurasi diagram kolom
-        const configBar = {
-            type: 'bar',
-            data: dataBar,
-            options: {
-                responsive: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Statistik Aset (Bar Chart)'
-                    }
+    // Konfigurasi diagram kolom
+    const configBar = {
+        type: 'bar',
+        data: dataBar,
+        options: {
+            responsive: false,
+            plugins: {
+                legend: {
+                    position: 'top',
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                title: {
+                    display: true,
+                    text: 'Statistik Aset (Bar Chart)'
                 }
             },
-            // Tambahkan properti berikut untuk membuat batang persegi panjang
-            barThickness: 50 // Atur ketebalan batang sesuai kebutuhan
-        };
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        },
+        barThickness: 50
+    };
 
-        // Render diagram pie
-        const ctxPie = document.getElementById('statistikDiagramPie').getContext('2d');
-        new Chart(ctxPie, configPie);
+    // Render diagram pie
+    const ctxPie = document.getElementById('statistikDiagramPie').getContext('2d');
+    new Chart(ctxPie, configPie);
 
-        // Render diagram kolom
-        const ctxBar = document.getElementById('statistikDiagramBar').getContext('2d');
-        new Chart(ctxBar, configBar);
-    </script>
+    // Render diagram kolom
+    const ctxBar = document.getElementById('statistikDiagramBar').getContext('2d');
+    new Chart(ctxBar, configBar);
+</script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.getElementById("sidebarToggle");
-        const sidebar = document.querySelector(".sidebar");
-        const body = document.body;
-
-        toggleBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("collapsed");
-        body.classList.toggle("sidebar-collapsed");
-        });
-    });
-    </script>
-
-</body>
-</html>
+<?php include('../include/footer.php'); ?>

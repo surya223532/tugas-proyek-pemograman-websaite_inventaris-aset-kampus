@@ -1,6 +1,13 @@
 <?php
 session_start();
 include('../include/koneksi.php');
+include('../include/popup_profil.php');
+
+$allowed_roles = ['admin', 'staf'];
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
+    header("Location: /siman/login.php");
+    exit();
+}
 
 $tahun_sekarang = date('Y');
 
@@ -52,80 +59,99 @@ $query_penyusutan = "
 ";
 $result_penyusutan = mysqli_query($conn, $query_penyusutan);
 
-$dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php';
+// Fungsi format Rupiah untuk PHP
+function formatRupiah($angka) {
+    return 'Rp ' . number_format($angka, 0, ',', '.');
+}
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Kelola Penyusutan</title>
-    <link rel="stylesheet" href="../assets/penyu.css">
-</head>
-<body>
-<header>
-    <h2>Kelola Penyusutan</h2>
-</header>
+<?php include('../include/header.php'); ?>
+<?php include($_SESSION['role'] === 'admin' ? '../include/sidebar_admin.php' : '../include/sidebar_staf.php'); ?>
 
-<main>
-    <h3>Daftar Penyusutan Aset</h3>
+<!-- Konten Utama -->
+<div class="main-content">
+    <header>
+        <h2>Kelola Penyusutan Aset</h2>
+    </header>
 
-    <!-- Pencarian -->
-    <form onsubmit="event.preventDefault(); filterTable();">
-        <input type="text" id="searchInput" placeholder="Cari aset...">
-        <button type="submit">Cari</button>
-    </form>
+    <main>
+        <!-- Pencarian -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Cari aset..." class="search-input">
+            <button type="button" onclick="filterTable()" class="btn btn-primary">Cari</button>
+        </div>
 
-    <!-- Tabel -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Aset</th>
-                    <th>Kategori</th>
-                    <th>Lokasi</th>
-                    <th>Tahun Perolehan</th>
-                    <th>Nilai Awal</th>
-                    <th>Nilai Penyusutan</th>
-                    <th>Nilai Sisa</th>
-                    <th>Masa Manfaat (tahun)</th>
-                    <th>Tahun Penyusutan</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php while ($penyusutan = mysqli_fetch_assoc($result_penyusutan)) : ?>
-            <tr>
-                <td><?= htmlspecialchars($penyusutan['nama_aset']) ?></td>
-                <td><?= htmlspecialchars($penyusutan['kategori']) ?></td>
-                <td><?= htmlspecialchars($penyusutan['lokasi']) ?></td>
-                <td><?= $penyusutan['tahun_perolehan'] ?></td>
-                <td>Rp<?= number_format($penyusutan['nilai_awal'], 2, ',', '.') ?></td>
-                <td>Rp<?= number_format($penyusutan['nilai_susut'], 2, ',', '.') ?></td>
-                <td>Rp<?= number_format($penyusutan['nilai_sisa'], 2, ',', '.') ?></td>
-                <td><?= htmlspecialchars($penyusutan['masa_manfaat']) ?> tahun</td>
-                <td><?= $penyusutan['tahun'] ?></td>
-            </tr>
-            <?php endwhile ?>
-            </tbody>
-        </table>
-    </div>
-    <div class="dashboard-container">
-        <button onclick="window.location.href='<?= $dashboard ?>'">Kembali</button>
-    </div>
-</main>
-<footer>
-    &copy; <?= date('Y') ?> Sistem Informasi Manajemen Aset
-</footer>
+        <!-- Tabel Daftar Penyusutan -->
+        <section class="aset-list">
+            <h3>Daftar Penyusutan Aset</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Aset</th>
+                            <th>Kategori</th>
+                            <th>Lokasi</th>
+                            <th>Tahun Perolehan</th>
+                            <th>Nilai Awal</th>
+                            <th>Nilai Penyusutan</th>
+                            <th>Nilai Sisa</th>
+                            <th>Masa Manfaat</th>
+                            <th>Tahun Penyusutan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($penyusutan = mysqli_fetch_assoc($result_penyusutan)) : ?>
+                        <tr>
+                            <td><?= htmlspecialchars($penyusutan['nama_aset']) ?></td>
+                            <td><?= htmlspecialchars($penyusutan['kategori']) ?></td>
+                            <td><?= htmlspecialchars($penyusutan['lokasi']) ?></td>
+                            <td><?= $penyusutan['tahun_perolehan'] ?></td>
+                            <td><?= formatRupiah($penyusutan['nilai_awal']) ?></td>
+                            <td><?= formatRupiah($penyusutan['nilai_susut']) ?></td>
+                            <td><?= formatRupiah($penyusutan['nilai_sisa']) ?></td>
+                            <td><?= htmlspecialchars($penyusutan['masa_manfaat']) ?> Tahun</td>
+                            <td><?= $penyusutan['tahun'] ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <button onclick="window.location.href='<?= ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php' ?>'" 
+                    class="btn btn-secondary">
+                Kembali ke Dashboard
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
+    </footer>
+</div>
+
 <script>
     function filterTable() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
         const rows = document.querySelectorAll('tbody tr');
+        
         rows.forEach(row => {
             const cells = row.querySelectorAll('td');
-            const match = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchInput));
+            const match = Array.from(cells).some(cell => 
+                cell.textContent.toLowerCase().includes(searchInput)
+            );
             row.style.display = match ? '' : 'none';
         });
     }
+    
+    // Enable filtering when pressing Enter in search input
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            filterTable();
+        }
+    });
 </script>
-</body>
-</html>
+
+<?php include('../include/footer.php'); ?>
+<?php mysqli_close($conn); ?>

@@ -5,7 +5,7 @@ include('../include/koneksi.php');
 $allowed_roles = ['admin', 'staf'];
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
-    header("Location: login.php"); // Jika bukan role yang diizinkan, arahkan kembali ke login
+    header("Location: /siman/login.php");
     exit();
 }
 
@@ -65,86 +65,104 @@ if (isset($_GET['edit'])) {
     $kategori_edit = $result->fetch_assoc();
     $stmt->close();
 }
+
+// Ambil daftar kategori untuk tabel
+$result = $conn->query("SELECT * FROM kategori ORDER BY id_kategori DESC");
 ?>
-<?php
-$dashboard = ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php';
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Kategori Aset</title>
-    <link rel="stylesheet" href="../assets/kategori_aset.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        table th, table td { text-align: left; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2> Kategori Aset</h2>
 
-        <!-- Form tambah / edit kategori -->
-        <form method="post" action="">
-            <input type="hidden" name="id_kategori" value="<?= $kategori_edit['id_kategori'] ?? '' ?>">
-            <label for="nama_kategori">Nama Kategori:</label>
-            <input type="text" name="nama_kategori" id="nama_kategori" value="<?= htmlspecialchars($kategori_edit['nama_kategori'] ?? '') ?>" required>
+<?php include('../include/header.php'); ?>
+<?php include($_SESSION['role'] === 'admin' ? '../include/sidebar_admin.php' : '../include/sidebar_staf.php'); ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Konten Utama -->
+<div class="main-content">
+    <header>
+        <h2>Manajemen Kategori Aset</h2>
+    </header>
 
-            <label for="deskripsi">Deskripsi:</label>
-            <textarea name="deskripsi" id="deskripsi" required><?= htmlspecialchars($kategori_edit['deskripsi'] ?? '') ?></textarea>
+    <main>
+        <!-- Form Tambah/Edit Kategori -->
+        <section class="form-section">
+            <h3><?= $kategori_edit ? 'Edit Kategori' : 'Tambah Kategori Baru' ?></h3>
+            <form method="post" class="kategori-form">
+                <input type="hidden" name="id_kategori" value="<?= $kategori_edit['id_kategori'] ?? '' ?>">
+                
+                <div class="form-group">
+                    <label for="nama_kategori">Nama Kategori:</label>
+                    <input type="text" name="nama_kategori" id="nama_kategori" 
+                           value="<?= htmlspecialchars($kategori_edit['nama_kategori'] ?? '') ?>" required>
+                </div>
 
-            <?php if ($kategori_edit): ?>
-                <button type="submit" name="edit">Simpan Perubahan</button>
-                <a href="kategori_aset.php" style="margin-left: 10px; color: red;">Batal</a>
-            <?php else: ?>
-                <button type="submit" name="tambah">Tambah</button>
-            <?php endif; ?>
-        </form>
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi:</label>
+                    <textarea name="deskripsi" id="deskripsi" required><?= htmlspecialchars($kategori_edit['deskripsi'] ?? '') ?></textarea>
+                </div>
 
-        <hr>
+                <div class="form-actions">
+                    <?php if ($kategori_edit): ?>
+                        <button type="submit" name="edit" class="btn btn-primary">Simpan Perubahan</button>
+                        <a href="kategori_aset.php" class="btn btn-secondary">Batal</a>
+                    <?php else: ?>
+                        <button type="submit" name="tambah" class="btn btn-primary">Tambah Kategori</button>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </section>
 
-        <h3>Daftar Kategori</h3>
-        <table border="1" cellpadding="10">
-            <tr>
-                <th>ID</th>
-                <th>Nama Kategori</th>
-                <th>Deskripsi</th>
-                <th>Aksi</th>
-            </tr>
-            <?php
-            $result = $conn->query("SELECT * FROM kategori ORDER BY id_kategori DESC");
-            if ($result->num_rows > 0):
-                while ($row = $result->fetch_assoc()):
-            ?>
-            <tr>
-                <td><?= htmlspecialchars($row['id_kategori']) ?></td>
-                <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
-                <td><?= htmlspecialchars($row['deskripsi']) ?></td>
-                <td class="aksi">
-                    <a href="?edit=<?= $row['id_kategori'] ?>" class="btn-icon edit" title="Edit">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    <a href="?hapus=<?= $row['id_kategori'] ?>" class="btn-icon delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus?')">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                </td>
+        <!-- Tabel Daftar Kategori -->
+        <section class="kategori-list">
+            <h3>Daftar Kategori Aset</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Kategori</th>
+                            <th>Deskripsi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['id_kategori']) ?></td>
+                                <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
+                                <td><?= htmlspecialchars($row['deskripsi']) ?></td>
+                                <td class="aksi">
+                                    <a href="?edit=<?= $row['id_kategori'] ?>" class="btn-icon edit" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="?hapus=<?= $row['id_kategori'] ?>" class="btn-icon delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus kategori ini?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada kategori yang terdaftar</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-            </tr>
-            <?php endwhile; else: ?>
-            <tr><td colspan="4">Belum ada kategori.</td></tr>
-            <?php endif; ?>
-        </table>
-        <a href="<?= $dashboard ?>" class="btn-kembali">Kembali</a>
-    </div>
-    
-    <script>
-        // Script untuk konfirmasi penghapusan
-        document.querySelectorAll('a[href*="hapus"]').forEach(link => {
-            link.addEventListener('click', function(event) {
-                if (!confirm('Yakin ingin menghapus kategori ini?')) {
-                    event.preventDefault();
-                }
-            });
+    <footer>
+        <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
+    </footer>
+</div>
+
+<script>
+    // Konfirmasi sebelum menghapus
+    document.querySelectorAll('.btn-icon.delete').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!confirm('Yakin ingin menghapus kategori ini?')) {
+                e.preventDefault();
+            }
         });
-</body>
-</html>
+    });
+</script>
+
+<?php include('../include/footer.php'); ?>

@@ -1,19 +1,12 @@
 <?php
 session_start();
 include('../include/koneksi.php');
+include('../include/popup_profil.php');
+
 $allowed_roles = ['admin', 'staf'];
-
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
-    header("Location: login.php");
+    header("Location: /siman/login.php");
     exit();
-}
-
-if ($_SESSION['role'] === 'admin') {
-    $dashboard = '../adm/admin.php';
-} elseif ($_SESSION['role'] === 'staf') {
-    $dashboard = '../staf/staf.php';
-} else {
-    $dashboard = '../dashboard.php';
 }
 
 // Fungsi format Rupiah untuk PHP
@@ -103,183 +96,184 @@ if (isset($_GET['edit_aset'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Pengelolaan Aset</title>
-    <link rel="stylesheet" href="../assets/atur_aset.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        .input-rupiah {
-            position: relative;
-        }
-        .input-rupiah::before {
-            content: "Rp";
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1;
-        }
-        .input-rupiah input {
-            padding-left: 30px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
+<?php include('../include/header.php'); ?>
+<?php include($_SESSION['role'] === 'admin' ? '../include/sidebar_admin.php' : '../include/sidebar_staf.php'); ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Konten Utama -->
+<div class="main-content">
+    <header>
         <h2>Manajemen Aset</h2>
+    </header>
 
-        <?php if (isset($message)) echo "<p class='message'><strong>$message</strong></p>"; ?>
+    <main>
+        <?php if (isset($message)) echo "<div class='alert'>$message</div>"; ?>
 
         <!-- Form Tambah/Edit Aset -->
-        <div class="form-section">
+        <section class="form-section">
             <h3><?= isset($aset) ? "Edit Aset" : "Tambah Aset"; ?></h3>
-            <form method="post">
+            <form method="post" class="asset-form">
                 <?php if (isset($aset)) { ?>
                     <input type="hidden" name="id_aset" value="<?= htmlspecialchars($aset['id_aset']); ?>">
                 <?php } ?>
                 
-                <label for="nama_aset">Nama Aset:</label>
-                <input type="text" name="nama_aset" required value="<?= isset($aset) ? htmlspecialchars($aset['nama_aset']) : ''; ?>">
-
-                <label for="kategori_id">Kategori Aset:</label>
-                <select name="kategori_id" required>
-                    <option value="">Pilih Kategori</option>
-                    <?php 
-                    mysqli_data_seek($kategori_list, 0);
-                    while($kategori = mysqli_fetch_assoc($kategori_list)) { 
-                    ?>
-                        <option value="<?= $kategori['id_kategori'] ?>" <?= isset($aset) && $aset['kategori_id'] == $kategori['id_kategori'] ? 'selected' : ''; ?>>
-                            <?= htmlspecialchars($kategori['nama_kategori']) ?>
-                        </option>
-                    <?php } ?>
-                </select>
-
-                <label for="lokasi_id">Lokasi Aset:</label>
-                <select name="lokasi_id" required>
-                    <option value="">Pilih Lokasi</option>
-                    <?php 
-                    mysqli_data_seek($lokasi_list, 0);
-                    while($lokasi = mysqli_fetch_assoc($lokasi_list)) { 
-                    ?>
-                        <option value="<?= $lokasi['id_lokasi'] ?>" <?= isset($aset) && $aset['lokasi_id'] == $lokasi['id_lokasi'] ? 'selected' : ''; ?>>
-                            <?= htmlspecialchars($lokasi['nama_lokasi']) ?>
-                        </option>
-                    <?php } ?>
-                </select>
-
-                <label for="tanggal_perolehan">Tanggal Perolehan:</label>
-                <input type="date" name="tanggal_perolehan" required 
-                       value="<?= isset($aset) ? htmlspecialchars($aset['tanggal_perolehan']) : ''; ?>">
-
-                <label for="nilai_awal">Nilai Awal Aset:</label>
-                <div class="input-rupiah">
-                    <input type="text" name="nilai_awal" required 
-                           value="<?= isset($aset) ? number_format($aset['nilai_awal'], 0, ',', '.') : ''; ?>"
-                           onkeyup="formatRupiah(this)">
+                <div class="form-group">
+                    <label for="nama_aset">Nama Aset:</label>
+                    <input type="text" name="nama_aset" required value="<?= isset($aset) ? htmlspecialchars($aset['nama_aset']) : ''; ?>">
                 </div>
 
-                <label for="status">Status:</label>
-                <select name="status" required>
-                    <option value="Aktif" <?= isset($aset) && $aset['status'] == 'Aktif' ? 'selected' : ''; ?>>Aktif</option>
-                    <option value="Tidak Aktif" <?= isset($aset) && $aset['status'] == 'Tidak Aktif' ? 'selected' : ''; ?>>Tidak Aktif</option>
-                    <option value="Dalam Perbaikan" <?= isset($aset) && $aset['status'] == 'Dalam Perbaikan' ? 'selected' : ''; ?>>Dalam Perbaikan</option>
-                </select>
+                <div class="form-group">
+                    <label for="kategori_id">Kategori Aset:</label>
+                    <select name="kategori_id" required>
+                        <option value="">Pilih Kategori</option>
+                        <?php 
+                        mysqli_data_seek($kategori_list, 0);
+                        while($kategori = mysqli_fetch_assoc($kategori_list)) { 
+                        ?>
+                            <option value="<?= $kategori['id_kategori'] ?>" <?= isset($aset) && $aset['kategori_id'] == $kategori['id_kategori'] ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($kategori['nama_kategori']) ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
 
-                <label for="masa_manfaat">Masa Manfaat (tahun):</label>
-                <input type="number" name="masa_manfaat" required min="1" max="50"
-                       value="<?= isset($aset) ? (int)$aset['masa_manfaat'] : ''; ?>">
+                <div class="form-group">
+                    <label for="lokasi_id">Lokasi Aset:</label>
+                    <select name="lokasi_id" required>
+                        <option value="">Pilih Lokasi</option>
+                        <?php 
+                        mysqli_data_seek($lokasi_list, 0);
+                        while($lokasi = mysqli_fetch_assoc($lokasi_list)) { 
+                        ?>
+                            <option value="<?= $lokasi['id_lokasi'] ?>" <?= isset($aset) && $aset['lokasi_id'] == $lokasi['id_lokasi'] ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($lokasi['nama_lokasi']) ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_perolehan">Tanggal Perolehan:</label>
+                    <input type="date" name="tanggal_perolehan" required 
+                           value="<?= isset($aset) ? htmlspecialchars($aset['tanggal_perolehan']) : ''; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="nilai_awal">Nilai Awal Aset:</label>
+                    <div class="input-rupiah">
+                        <input type="text" name="nilai_awal" required 
+                               value="<?= isset($aset) ? number_format($aset['nilai_awal'], 0, ',', '.') : ''; ?>"
+                               onkeyup="formatRupiah(this)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select name="status" required>
+                        <option value="Aktif" <?= isset($aset) && $aset['status'] == 'Aktif' ? 'selected' : ''; ?>>Aktif</option>
+                        <option value="Tidak Aktif" <?= isset($aset) && $aset['status'] == 'Tidak Aktif' ? 'selected' : ''; ?>>Tidak Aktif</option>
+                        <option value="Dalam Perbaikan" <?= isset($aset) && $aset['status'] == 'Dalam Perbaikan' ? 'selected' : ''; ?>>Dalam Perbaikan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="masa_manfaat">Masa Manfaat (tahun):</label>
+                    <input type="number" name="masa_manfaat" required min="1" max="50"
+                           value="<?= isset($aset) ? (int)$aset['masa_manfaat'] : ''; ?>">
+                </div>
 
                 <div class="form-actions">
                     <?php if (isset($aset)) { ?>
-                        <button type="submit" name="edit_aset" class="btn-primary">Update Aset</button>
-                        <a href="?" class="btn-secondary">Batal</a>
+                        <button type="submit" name="edit_aset" class="btn btn-primary">Update Aset</button>
+                        <a href="atur_aset.php" class="btn btn-secondary">Batal</a>
                     <?php } else { ?>
-                        <button type="submit" name="tambah_aset" class="btn-primary">Tambah Aset</button>
+                        <button type="submit" name="tambah_aset" class="btn btn-primary">Tambah Aset</button>
                     <?php } ?>
                 </div>
             </form>
-        </div>
+        </section>
 
         <!-- Tabel Daftar Aset -->
-        <div class="aset-list">
+        <section class="aset-list">
             <h3>Daftar Aset</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama Aset</th>
-                        <th>Kategori</th>
-                        <th>Lokasi</th>
-                        <th>Tanggal Perolehan</th>
-                        <th>Nilai Awal</th>
-                        <th>Status</th>
-                        <th>Masa Manfaat</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $result_aset = mysqli_query($conn, "SELECT aset.*, kategori.nama_kategori, lokasi.nama_lokasi 
-                                                      FROM aset 
-                                                      JOIN kategori ON aset.kategori_id = kategori.id_kategori
-                                                      JOIN lokasi ON aset.lokasi_id = lokasi.id_lokasi
-                                                      ORDER BY aset.nama_aset ASC");
-                    while ($aset_item = mysqli_fetch_assoc($result_aset)) { 
-                        $tanggal = date('d-m-Y', strtotime($aset_item['tanggal_perolehan']));
-                    ?>
+            <div class="table-container">
+                <table>
+                    <thead>
                         <tr>
-                            <td><?= htmlspecialchars($aset_item['nama_aset']) ?></td>
-                            <td><?= htmlspecialchars($aset_item['nama_kategori']) ?></td>
-                            <td><?= htmlspecialchars($aset_item['nama_lokasi']) ?></td>
-                            <td><?= $tanggal ?></td>
-                            <td><?= formatRupiah($aset_item['nilai_awal']) ?></td>
-                            <td><?= htmlspecialchars($aset_item['status']) ?></td>
-                            <td><?= (int)$aset_item['masa_manfaat'] ?> Tahun</td>
-                            <td class="aksi">
-                                <a href="?edit_aset=<?= $aset_item['id_aset'] ?>" class="btn-icon edit" title="Edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <a href="?hapus_aset=<?= $aset_item['id_aset'] ?>" class="btn-icon delete" title="Hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus aset ini?')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </td>
+                            <th>Nama Aset</th>
+                            <th>Kategori</th>
+                            <th>Lokasi</th>
+                            <th>Tanggal Perolehan</th>
+                            <th>Nilai Awal</th>
+                            <th>Status</th>
+                            <th>Masa Manfaat</th>
+                            <th>Aksi</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $result_aset = mysqli_query($conn, "SELECT aset.*, kategori.nama_kategori, lokasi.nama_lokasi 
+                                                          FROM aset 
+                                                          JOIN kategori ON aset.kategori_id = kategori.id_kategori
+                                                          JOIN lokasi ON aset.lokasi_id = lokasi.id_lokasi
+                                                          ORDER BY aset.nama_aset ASC");
+                        while ($aset_item = mysqli_fetch_assoc($result_aset)) { 
+                            $tanggal = date('d-m-Y', strtotime($aset_item['tanggal_perolehan']));
+                        ?>
+                            <tr>
+                                <td><?= htmlspecialchars($aset_item['nama_aset']) ?></td>
+                                <td><?= htmlspecialchars($aset_item['nama_kategori']) ?></td>
+                                <td><?= htmlspecialchars($aset_item['nama_lokasi']) ?></td>
+                                <td><?= $tanggal ?></td>
+                                <td><?= formatRupiah($aset_item['nilai_awal']) ?></td>
+                                <td><?= htmlspecialchars($aset_item['status']) ?></td>
+                                <td><?= (int)$aset_item['masa_manfaat'] ?> Tahun</td>
+                                <td class="aksi">
+                                    <a href="?edit_aset=<?= $aset_item['id_aset'] ?>" class="btn-icon edit" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="?hapus_aset=<?= $aset_item['id_aset'] ?>" class="btn-icon delete" title="Hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus aset ini?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-        <button class="btn-kembali" onclick="window.location.href='<?= $dashboard ?>'">Kembali</button>
-    </div>
+    <footer>
+        <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
+    </footer>
+</div>
 
-    <script>
-        // Fungsi format Rupiah untuk input
-        function formatRupiah(input) {
-            // Hapus semua karakter selain angka
-            let value = input.value.replace(/\D/g, '');
-            
-            // Format dengan titik sebagai pemisah ribuan
-            if (value.length > 0) {
-                value = parseInt(value).toLocaleString('id-ID');
-            }
-            
-            input.value = value;
+<script>
+    // Fungsi format Rupiah untuk input
+    function formatRupiah(input) {
+        // Hapus semua karakter selain angka
+        let value = input.value.replace(/\D/g, '');
+        
+        // Format dengan titik sebagai pemisah ribuan
+        if (value.length > 0) {
+            value = parseInt(value).toLocaleString('id-ID');
         }
+        
+        input.value = value;
+    }
 
-        // Format semua input Rupiah saat load halaman
-        document.addEventListener('DOMContentLoaded', function() {
-            const rupiahInputs = document.querySelectorAll('input[name="nilai_awal"]');
-            rupiahInputs.forEach(input => {
-                if (input.value) {
-                    let value = input.value.replace(/\D/g, '');
-                    if (value.length > 0) {
-                        input.value = parseInt(value).toLocaleString('id-ID');
-                    }
+    // Format semua input Rupiah saat load halaman
+    document.addEventListener('DOMContentLoaded', function() {
+        const rupiahInputs = document.querySelectorAll('input[name="nilai_awal"]');
+        rupiahInputs.forEach(input => {
+            if (input.value) {
+                let value = input.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    input.value = parseInt(value).toLocaleString('id-ID');
                 }
-            });
+            }
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+
+<?php include('../include/footer.php'); ?>

@@ -22,15 +22,20 @@ function formatTanggal($date) {
 // Mendapatkan nilai pencarian jika ada
 $cari = isset($_POST['cari']) ? mysqli_real_escape_string($conn, $_POST['cari']) : '';
 
-// Query untuk mengambil data aset, dengan filter pencarian
+// Query untuk mengambil data aset, dengan filter pencarian dan termasuk ruangan serta garansi
 $query = "SELECT aset.id_aset, aset.nama_aset, kategori.nama_kategori, lokasi.nama_lokasi, 
-                 aset.tanggal_perolehan, aset.nilai_awal, aset.status 
+                 ruangan.nama_ruangan, aset.tanggal_perolehan, aset.nilai_awal, aset.status,
+                 aset.jenis_garansi, aset.garansi_berakhir, aset.penyedia_garansi, aset.nomor_garansi
           FROM aset 
           JOIN kategori ON aset.kategori_id = kategori.id_kategori 
           JOIN lokasi ON aset.lokasi_id = lokasi.id_lokasi
+          LEFT JOIN ruangan ON aset.ruangan_id = ruangan.id_ruangan
           WHERE aset.nama_aset LIKE '%$cari%' 
              OR kategori.nama_kategori LIKE '%$cari%' 
              OR lokasi.nama_lokasi LIKE '%$cari%'
+             OR ruangan.nama_ruangan LIKE '%$cari%'
+             OR aset.jenis_garansi LIKE '%$cari%'
+             OR aset.penyedia_garansi LIKE '%$cari%'
           ORDER BY aset.nama_aset ASC";
 
 $result = mysqli_query($conn, $query);
@@ -75,9 +80,12 @@ if ($_SESSION['role'] === 'admin') {
                             <th>Nama Aset</th>
                             <th>Kategori</th>
                             <th>Lokasi</th>
+                            <th>Ruangan</th>
                             <th>Tanggal Perolehan</th>
                             <th>Nilai Awal</th>
                             <th>Status</th>
+                            <th>Garansi</th>
+                            <th>Berlaku Sampai</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,14 +96,29 @@ if ($_SESSION['role'] === 'admin') {
                                     <td><?= htmlspecialchars($row['nama_aset']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_lokasi']) ?></td>
+                                    <td><?= $row['nama_ruangan'] ? htmlspecialchars($row['nama_ruangan']) : '-' ?></td>
                                     <td><?= formatTanggal($row['tanggal_perolehan']) ?></td>
                                     <td><?= formatRupiah($row['nilai_awal']) ?></td>
                                     <td><?= htmlspecialchars($row['status']) ?></td>
+                                    <td>
+                                        <?php if ($row['jenis_garansi']): ?>
+                                            <?= ucfirst($row['jenis_garansi']) ?><br>
+                                            <small><?= $row['penyedia_garansi'] ?></small>
+                                        <?php else: ?>
+                                            -
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?= $row['garansi_berakhir'] ? formatTanggal($row['garansi_berakhir']) : '-' ?>
+                                        <?php if ($row['garansi_berakhir'] && strtotime($row['garansi_berakhir']) < time()): ?>
+                                            <span class="badge bg-danger">Expired</span>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7">Tidak ada data aset yang ditemukan</td>
+                                <td colspan="10">Tidak ada data aset yang ditemukan</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

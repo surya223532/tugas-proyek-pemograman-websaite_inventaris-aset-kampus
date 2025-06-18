@@ -46,15 +46,17 @@ while ($aset = mysqli_fetch_assoc($result_aset)) {
     mysqli_query($conn, $query_simpan);
 }
 
-// Ambil data penyusutan dengan menambahkan tahun perolehan
+// Ambil data penyusutan dengan menambahkan tahun perolehan, garansi, dan ruangan
 $query_penyusutan = "
     SELECT p.*, a.nama_aset, a.nilai_awal, a.masa_manfaat, a.tanggal_perolehan, 
-           YEAR(a.tanggal_perolehan) AS tahun_perolehan,
-           k.nama_kategori AS kategori, l.nama_lokasi AS lokasi
+           a.jenis_garansi, a.garansi_berakhir, a.penyedia_garansi, a.nomor_garansi,
+           k.nama_kategori AS kategori, l.nama_lokasi AS lokasi,
+           r.nama_ruangan AS ruangan
     FROM penyusutan p
     JOIN aset a ON p.id_aset = a.id_aset
     JOIN kategori k ON a.kategori_id = k.id_kategori
     JOIN lokasi l ON a.lokasi_id = l.id_lokasi
+    LEFT JOIN ruangan r ON a.ruangan_id = r.id_ruangan
     ORDER BY a.tanggal_perolehan DESC, a.nama_aset
 ";
 $result_penyusutan = mysqli_query($conn, $query_penyusutan);
@@ -62,6 +64,11 @@ $result_penyusutan = mysqli_query($conn, $query_penyusutan);
 // Fungsi format Rupiah untuk PHP
 function formatRupiah($angka) {
     return 'Rp ' . number_format($angka, 0, ',', '.');
+}
+
+// Fungsi format tanggal
+function formatTanggal($date) {
+    return $date ? date('d-m-Y', strtotime($date)) : '-';
 }
 ?>
 
@@ -91,11 +98,14 @@ function formatRupiah($angka) {
                             <th>Nama Aset</th>
                             <th>Kategori</th>
                             <th>Lokasi</th>
-                            <th>Tahun Perolehan</th>
+                            <th>Ruangan</th>
+                            <th>Tanggal Perolehan</th>
                             <th>Nilai Awal</th>
                             <th>Nilai Penyusutan</th>
                             <th>Nilai Sisa</th>
                             <th>Masa Manfaat</th>
+                            <th>Garansi</th>
+                            <th>Berlaku Sampai</th>
                             <th>Tahun Penyusutan</th>
                         </tr>
                     </thead>
@@ -105,12 +115,27 @@ function formatRupiah($angka) {
                             <td><?= htmlspecialchars($penyusutan['nama_aset']) ?></td>
                             <td><?= htmlspecialchars($penyusutan['kategori']) ?></td>
                             <td><?= htmlspecialchars($penyusutan['lokasi']) ?></td>
-                            <td><?= $penyusutan['tahun_perolehan'] ?></td>
+                            <td><?= $penyusutan['ruangan'] ? htmlspecialchars($penyusutan['ruangan']) : '-' ?></td>
+                            <td><?= formatTanggal($penyusutan['tanggal_perolehan']) ?></td>
                             <td><?= formatRupiah($penyusutan['nilai_awal']) ?></td>
                             <td><?= formatRupiah($penyusutan['nilai_susut']) ?></td>
                             <td><?= formatRupiah($penyusutan['nilai_sisa']) ?></td>
                             <td><?= htmlspecialchars($penyusutan['masa_manfaat']) ?> Tahun</td>
-                            <td><?= $penyusutan['tahun'] ?></td>
+                            <td>
+                                <?php if ($penyusutan['jenis_garansi']): ?>
+                                    <?= ucfirst($penyusutan['jenis_garansi']) ?><br>
+                                    <small><?= $penyusutan['penyedia_garansi'] ?></small>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?= formatTanggal($penyusutan['garansi_berakhir']) ?>
+                                <?php if ($penyusutan['garansi_berakhir'] && strtotime($penyusutan['garansi_berakhir']) < time()): ?>
+                                    <span class="badge bg-danger">Expired</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?= date('d-m-Y', strtotime($penyusutan['tahun'].'-01-01')) ?></td>
                         </tr>
                         <?php endwhile; ?>
                     </tbody>

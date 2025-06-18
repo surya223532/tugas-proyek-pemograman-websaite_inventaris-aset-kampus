@@ -17,6 +17,12 @@ function formatRupiah($value) {
     return 'Rp ' . number_format((float)$value, 0, ',', '.');
 }
 
+// Fungsi untuk format tanggal
+function formatTanggal($date) {
+    if (empty($date)) return '-';
+    return date('d-m-Y', strtotime($date));
+}
+
 // Ambil parameter filter dari URL
 $kategori_filter = isset($_GET['kategori']) ? $_GET['kategori'] : '';
 $lokasi_filter = isset($_GET['lokasi']) ? $_GET['lokasi'] : '';
@@ -141,11 +147,17 @@ if (!empty($lokasi_filter)) {
                 a.status, 
                 k.nama_kategori, 
                 l.nama_lokasi, 
+                r.nama_ruangan,
                 COALESCE(p.nilai_susut, 0) as nilai_susut,
-                a.masa_manfaat
+                a.masa_manfaat,
+                a.jenis_garansi,
+                a.garansi_berakhir,
+                a.penyedia_garansi,
+                a.nomor_garansi
             FROM aset a
             LEFT JOIN kategori k ON a.kategori_id = k.id_kategori
             LEFT JOIN lokasi l ON a.lokasi_id = l.id_lokasi
+            LEFT JOIN ruangan r ON a.ruangan_id = r.id_ruangan
             LEFT JOIN penyusutan p ON a.id_aset = p.id_aset
             WHERE 1=1
         ";
@@ -164,7 +176,9 @@ if (!empty($lokasi_filter)) {
         }
         
         if (!empty($search_query)) {
-            $query .= " AND a.nama_aset LIKE '%" . $conn->real_escape_string($search_query) . "%'";
+            $query .= " AND (a.nama_aset LIKE '%" . $conn->real_escape_string($search_query) . "%' 
+                          OR r.nama_ruangan LIKE '%" . $conn->real_escape_string($search_query) . "%'
+                          OR a.penyedia_garansi LIKE '%" . $conn->real_escape_string($search_query) . "%')";
         }
         
         // Tambahkan filter tanggal jika diisi
@@ -195,6 +209,9 @@ if (!empty($lokasi_filter)) {
                             <th>Status</th>
                             <th>Kategori</th>
                             <th>Lokasi</th>
+                            <th>Ruangan</th>
+                            <th>Garansi</th>
+                            <th>Berlaku Sampai</th>
                             <th>Nilai Susut</th>
                             <th>Masa Manfaat</th>
                         </tr>
@@ -214,21 +231,39 @@ if (!empty($lokasi_filter)) {
                 echo "<tr>
                         <td>{$row['id_aset']}</td>
                         <td>{$row['nama_aset']}</td>
-                        <td>" . date('d-m-Y', strtotime($row['tanggal_perolehan'])) . "</td>
+                        <td>" . formatTanggal($row['tanggal_perolehan']) . "</td>
                         <td>" . formatRupiah($row['nilai_awal']) . "</td>
                         <td>{$row['status']}</td>
                         <td>{$row['nama_kategori']}</td>
                         <td>{$row['nama_lokasi']}</td>
-                        <td>" . formatRupiah($row['nilai_susut']) . "</td>
-                        <td>{$row['masa_manfaat']} Tahun</td>
+                        <td>" . ($row['nama_ruangan'] ? $row['nama_ruangan'] : '-') . "</td>
+                        <td>";
+                
+                // Tampilkan informasi garansi
+                if ($row['jenis_garansi']) {
+                    echo ucfirst($row['jenis_garansi']);
+                    if ($row['penyedia_garansi']) {
+                        echo "<br><small>{$row['penyedia_garansi']}</small>";
+                    }
+                    if ($row['nomor_garansi']) {
+                        echo "<br><small>No: {$row['nomor_garansi']}</small>";
+                    }
+                } else {
+                    echo "-";
+                }
+                
+                echo "</td>
+                      <td>" . formatTanggal($row['garansi_berakhir']) . "</td>
+                      <td>" . formatRupiah($row['nilai_susut']) . "</td>
+                      <td>{$row['masa_manfaat']} Tahun</td>
                       </tr>";
             }
 
             $persentasePenyusutan = ($totalNilaiAset > 0) ? ($totalPenyusutan / $totalNilaiAset) * 100 : 0;
 
-            echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Total Penyusutan</td><td colspan='2'>" . formatRupiah($totalPenyusutan) . "</td></tr>";
-            echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Total Nilai Aset</td><td colspan='2'>" . formatRupiah($totalNilaiAset) . "</td></tr>";
-            echo "<tr><td colspan='7' style='text-align:right; font-weight:bold;'>Persentase Penyusutan</td><td colspan='2'>" . number_format($persentasePenyusutan, 2) . "%</td></tr>";
+            echo "<tr><td colspan='10' style='text-align:right; font-weight:bold;'>Total Penyusutan</td><td colspan='2'>" . formatRupiah($totalPenyusutan) . "</td></tr>";
+            echo "<tr><td colspan='10' style='text-align:right; font-weight:bold;'>Total Nilai Aset</td><td colspan='2'>" . formatRupiah($totalNilaiAset) . "</td></tr>";
+            echo "<tr><td colspan='10' style='text-align:right; font-weight:bold;'>Persentase Penyusutan</td><td colspan='2'>" . number_format($persentasePenyusutan, 2) . "%</td></tr>";
             echo "</tbody></table></div>";
 
             $json_labels = json_encode($labels);
@@ -450,6 +485,10 @@ if (!empty($lokasi_filter)) {
                 },
                 alternateRowStyles: {
                     fillColor: [245, 245, 245]
+                },
+                columnStyles: {
+                    8: {cellWidth: 30}, // Kolom Garansi
+                    9: {cellWidth: 20}  // Kolom Berlaku Sampai
                 }
             });
             

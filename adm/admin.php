@@ -19,21 +19,31 @@ $query_statistik = "
 $result_statistik = mysqli_query($conn, $query_statistik);
 $statistik = mysqli_fetch_assoc($result_statistik);
 
-// Query untuk tabel aset
+// Query untuk tabel aset dengan ruangan dan garansi
 $query_tabel = "
     SELECT 
         aset.id_aset, 
         aset.nama_aset, 
         kategori.nama_kategori, 
-        lokasi.nama_lokasi, 
+        lokasi.nama_lokasi,
+        ruangan.nama_ruangan,
         aset.tanggal_perolehan, 
         aset.nilai_awal, 
-        aset.status 
+        aset.status,
+        aset.jenis_garansi,
+        aset.garansi_berakhir,
+        aset.penyedia_garansi
     FROM aset 
     JOIN kategori ON aset.kategori_id = kategori.id_kategori 
     JOIN lokasi ON aset.lokasi_id = lokasi.id_lokasi
+    LEFT JOIN ruangan ON aset.ruangan_id = ruangan.id_ruangan
 ";
 $result_tabel = mysqli_query($conn, $query_tabel);
+
+// Fungsi format tanggal
+function formatTanggal($date) {
+    return date('d-m-Y', strtotime($date));
+}
 ?>
 
 <?php include('../include/header.php'); ?>
@@ -57,9 +67,12 @@ $result_tabel = mysqli_query($conn, $query_tabel);
                             <th>Nama Aset</th>
                             <th>Kategori</th>
                             <th>Lokasi</th>
+                            <th>Ruangan</th>
                             <th>Tanggal Perolehan</th>
                             <th>Nilai Awal</th>
                             <th>Status</th>
+                            <th>Garansi</th>
+                            <th>Berlaku Sampai</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,9 +82,24 @@ $result_tabel = mysqli_query($conn, $query_tabel);
                                 <td><?= $row['nama_aset'] ?></td>
                                 <td><?= $row['nama_kategori'] ?></td>
                                 <td><?= $row['nama_lokasi'] ?></td>
-                                <td><?= $row['tanggal_perolehan'] ?></td>
+                                <td><?= $row['nama_ruangan'] ? $row['nama_ruangan'] : '-' ?></td>
+                                <td><?= formatTanggal($row['tanggal_perolehan']) ?></td>
                                 <td>Rp <?= number_format($row['nilai_awal'], 0, ',', '.') ?></td>
                                 <td><?= $row['status'] ?></td>
+                                <td>
+                                    <?php if ($row['jenis_garansi']): ?>
+                                        <?= ucfirst($row['jenis_garansi']) ?><br>
+                                        <small><?= $row['penyedia_garansi'] ?></small>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= $row['garansi_berakhir'] ? formatTanggal($row['garansi_berakhir']) : '-' ?>
+                                    <?php if ($row['garansi_berakhir'] && strtotime($row['garansi_berakhir']) < time()): ?>
+                                        <span style="background-color: #dc3545; color: white; padding: 2px 5px; border-radius: 3px; font-size: 0.8em;">Expired</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>

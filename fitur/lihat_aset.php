@@ -125,9 +125,9 @@ if ($_SESSION['role'] === 'admin') {
                 </table>
             </div>
             
-            <div class="form-actions">
+            <!--<div class="form-actions">
                 <button onclick="window.history.back()" class="btn btn-secondary">Kembali</button>
-            </div>
+            </div>-->
         </section>
     </main>
 

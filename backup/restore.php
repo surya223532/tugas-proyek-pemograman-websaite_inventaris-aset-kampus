@@ -50,9 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['backup_file'])) {
 </head>
 <body>
     <div class="main-content">
-        <header>
-            <a href="../adm/admin.php" class="back-btn">Kembali</a>
-        </header>
 
         <main>
             <section>

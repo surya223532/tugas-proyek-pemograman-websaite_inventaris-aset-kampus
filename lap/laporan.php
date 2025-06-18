@@ -132,6 +132,8 @@ if (!empty($lokasi_filter)) {
                         <input type="text" id="search" name="search" class="form-control" placeholder="Cari nama aset..." value="<?= htmlspecialchars($search_query) ?>">
                         <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Cari</button>
                         <button type="button" onclick="resetFilter()" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Reset</button>
+                        <button onclick="downloadPDF()" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Download PDF</button>
+                        <button onclick="printPage()" class="btn btn-primary"><i class="fas fa-print"></i> Print</button>
                     </div>
                 </div>
             </form>
@@ -281,11 +283,11 @@ if (!empty($lokasi_filter)) {
             <canvas id="grafikAset" width="800" height="400"></canvas>
         </div>
         
-        <div class="button-container">
+        <!--<div class="button-container">
             <button onclick="window.history.back()" class="btn btn-secondary">Kembali</button>
             <button onclick="downloadPDF()" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Download PDF</button>
             <button onclick="printPage()" class="btn btn-primary"><i class="fas fa-print"></i> Print</button>
-        </div>
+        </div>-->
         <?php endif; ?>
 
         <script>
@@ -360,7 +362,7 @@ if (!empty($lokasi_filter)) {
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.8)',
                         titleFont: {
                             size: 14,
                             weight: 'bold'
@@ -514,5 +516,4 @@ if (!empty($lokasi_filter)) {
         <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
     </footer>
 </div>
-
 <?php include('../include/footer.php'); ?>

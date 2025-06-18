@@ -178,12 +178,12 @@ function formatTanggal($date) {
             </div>
         </section>
 
-        <div class="form-actions">
+       <!-- <div class="form-actions">
             <button onclick="window.location.href='<?= ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : '../staf/staf.php' ?>'" 
                     class="btn btn-secondary">
                 Kembali 
             </button>
-        </div>
+        </div>-->
     </main>
 
     <footer>

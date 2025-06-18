@@ -11,7 +11,7 @@ function isActive($page_names, $current_page) {
 ?>
 
 <div class="sidebar" id="sidebar">
-    <h2>Manajemen Aset</h2>
+    <h2>MANAJEMEN ASET</h2>
     <ul>
         <li class="<?= isActive('admin.php', $current_page) ?>">
             <a href='../adm/admin.php'>Dashboard</a>

@@ -64,26 +64,46 @@ if (isset($_POST['edit_aset'])) {
     $penyedia_garansi = isset($_POST['penyedia_garansi']) ? mysqli_real_escape_string($conn, $_POST['penyedia_garansi']) : NULL;
     $nomor_garansi = isset($_POST['nomor_garansi']) ? mysqli_real_escape_string($conn, $_POST['nomor_garansi']) : NULL;
 
-    $query = "UPDATE aset SET 
-              nama_aset = '$nama_aset', 
-              kategori_id = $kategori_id, 
-              lokasi_id = $lokasi_id, 
-              ruangan_id = " . ($ruangan_id ? "$ruangan_id" : "NULL") . ", 
-              tanggal_perolehan = '$tanggal_perolehan', 
-              nilai_awal = $nilai_awal, 
-              status = '$status', 
-              masa_manfaat = $masa_manfaat,
-              jenis_garansi = " . ($jenis_garansi ? "'$jenis_garansi'" : "NULL") . ",
-              garansi_berakhir = " . ($garansi_berakhir ? "'$garansi_berakhir'" : "NULL") . ",
-              penyedia_garansi = " . ($penyedia_garansi ? "'$penyedia_garansi'" : "NULL") . ",
-              nomor_garansi = " . ($nomor_garansi ? "'$nomor_garansi'" : "NULL") . "
-              WHERE id_aset = $id_aset";
+    // Mulai transaksi
+    mysqli_begin_transaction($conn);
+    
+    try {
+        // Update data aset
+        $query = "UPDATE aset SET 
+                  nama_aset = '$nama_aset', 
+                  kategori_id = $kategori_id, 
+                  lokasi_id = $lokasi_id, 
+                  ruangan_id = " . ($ruangan_id ? "$ruangan_id" : "NULL") . ", 
+                  tanggal_perolehan = '$tanggal_perolehan', 
+                  nilai_awal = $nilai_awal, 
+                  status = '$status', 
+                  masa_manfaat = $masa_manfaat,
+                  jenis_garansi = " . ($jenis_garansi ? "'$jenis_garansi'" : "NULL") . ",
+                  garansi_berakhir = " . ($garansi_berakhir ? "'$garansi_berakhir'" : "NULL") . ",
+                  penyedia_garansi = " . ($penyedia_garansi ? "'$penyedia_garansi'" : "NULL") . ",
+                  nomor_garansi = " . ($nomor_garansi ? "'$nomor_garansi'" : "NULL") . "
+                  WHERE id_aset = $id_aset";
 
-    if (mysqli_query($conn, $query)) {
-        $message = "Aset berhasil diperbarui!";
+        if (!mysqli_query($conn, $query)) {
+            throw new Exception("Gagal memperbarui aset: " . mysqli_error($conn));
+        }
+
+        // Hapus record penyusutan yang ada untuk aset ini mulai tahun sekarang
+        $tahun_sekarang = date('Y');
+        $query_hapus_penyusutan = "DELETE FROM penyusutan WHERE id_aset = $id_aset AND tahun >= '$tahun_sekarang'";
+        if (!mysqli_query($conn, $query_hapus_penyusutan)) {
+            throw new Exception("Gagal menghapus data penyusutan lama: " . mysqli_error($conn));
+        }
+
+        // Commit transaksi jika semua query berhasil
+        mysqli_commit($conn);
+        $message = "Aset berhasil diperbarui dan data penyusutan akan dihitung ulang!";
         unset($_GET['edit_aset']);
-    } else {
-        $message = "Gagal memperbarui aset: " . mysqli_error($conn);
+        
+    } catch (Exception $e) {
+        // Rollback transaksi jika ada error
+        mysqli_rollback($conn);
+        $message = $e->getMessage();
     }
 }
 
@@ -91,11 +111,30 @@ if (isset($_POST['edit_aset'])) {
 if (isset($_GET['hapus_aset'])) {
     $id_aset = (int)$_GET['hapus_aset'];
 
-    $query = "DELETE FROM aset WHERE id_aset = $id_aset";
-    if (mysqli_query($conn, $query)) {
-        $message = "Aset berhasil dihapus!";
-    } else {
-        $message = "Gagal menghapus aset: " . mysqli_error($conn);
+    // Mulai transaksi
+    mysqli_begin_transaction($conn);
+    
+    try {
+        // Hapus data penyusutan terlebih dahulu
+        $query_hapus_penyusutan = "DELETE FROM penyusutan WHERE id_aset = $id_aset";
+        if (!mysqli_query($conn, $query_hapus_penyusutan)) {
+            throw new Exception("Gagal menghapus data penyusutan: " . mysqli_error($conn));
+        }
+
+        // Kemudian hapus data aset
+        $query_hapus_aset = "DELETE FROM aset WHERE id_aset = $id_aset";
+        if (!mysqli_query($conn, $query_hapus_aset)) {
+            throw new Exception("Gagal menghapus aset: " . mysqli_error($conn));
+        }
+
+        // Commit transaksi jika semua query berhasil
+        mysqli_commit($conn);
+        $message = "Aset dan data penyusutannya berhasil dihapus!";
+        
+    } catch (Exception $e) {
+        // Rollback transaksi jika ada error
+        mysqli_rollback($conn);
+        $message = $e->getMessage();
     }
 }
 
@@ -339,17 +378,6 @@ if (isset($_GET['edit_aset'])) {
             </div>
         </section>
     </main>
-    
-    <!-- Kembali Button -->
-    <div class="form-actions text-end mb-4">
-        <button onclick="window.location.href='<?= 
-            ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : 
-            (($_SESSION['role'] === 'pimpinan') ? '../pimpinan/pimpinan.php' : '../staf/staf.php') 
-        ?>'" 
-        class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
-        </button>
-    </div>
 
     <footer>
         <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>

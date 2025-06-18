@@ -154,7 +154,7 @@ $users = mysqli_query($conn, $query);
         </section>
 
         <div class="form-actions">
-            <a href="../adm/admin.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+            <a href="../adm/admin.php" class="btn btn-secondary">Kembali</a>
         </div>
     </main>
 

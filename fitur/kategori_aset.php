@@ -1,7 +1,7 @@
 <?php
 session_start();
 include('../include/koneksi.php');
-
+include('../include/popup_profil.php');
 $allowed_roles = ['admin', 'staf'];
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
@@ -73,6 +73,7 @@ $result = $conn->query("SELECT * FROM kategori ORDER BY id_kategori DESC");
 <?php include('../include/header.php'); ?>
 <?php include($_SESSION['role'] === 'admin' ? '../include/sidebar_admin.php' : '../include/sidebar_staf.php'); ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/kategori_aset.css">
 <!-- Konten Utama -->
 <div class="main-content">
     <header>

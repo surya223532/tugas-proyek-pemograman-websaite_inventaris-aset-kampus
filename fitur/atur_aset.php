@@ -1,7 +1,7 @@
 <?php
 session_start();
 include('../include/koneksi.php');
-
+include('../include/popup_profil.php');
 
 $allowed_roles = ['admin', 'staf'];
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {

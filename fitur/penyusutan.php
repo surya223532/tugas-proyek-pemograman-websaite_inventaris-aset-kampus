@@ -2,7 +2,6 @@
 session_start();
 include('../include/koneksi.php');
 include('../include/popup_profil.php');
-
 $allowed_roles = ['admin', 'staf'];
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
     header("Location: /siman/login.php");
@@ -11,39 +10,44 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
 
 $tahun_sekarang = date('Y');
 
-// Ambil aset yang belum disusutkan tahun ini
-$query_aset = "
-    SELECT * FROM aset 
-    WHERE id_aset NOT IN (
-        SELECT id_aset FROM penyusutan WHERE tahun = '$tahun_sekarang'
-    )
-";
-$result_aset = mysqli_query($conn, $query_aset);
+// Handle search functionality
+$search_term = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
 
-// Simpan otomatis data penyusutan
-while ($aset = mysqli_fetch_assoc($result_aset)) {
-    if (!isset($aset['masa_manfaat']) || !$aset['masa_manfaat'] || !$aset['tanggal_perolehan'] || !$aset['nilai_awal']) continue;
-
-    $tahun_perolehan = date('Y', strtotime($aset['tanggal_perolehan']));
-    $umur = max(0, $tahun_sekarang - $tahun_perolehan);
-    $masa_manfaat = $aset['masa_manfaat'];
-    $nilai_awal = $aset['nilai_awal'];
-    $nilai_susut = $masa_manfaat > 0 ? $nilai_awal / $masa_manfaat : 0;
-
-    if ($umur >= $masa_manfaat) {
-        $nilai_sisa = 0;
-    } elseif ($umur > 0) {
-        $nilai_sisa = $nilai_awal - ($nilai_susut * $umur);
-    } else {
-        $nilai_sisa = $nilai_awal;
-    }
-
-    $id_aset = $aset['id_aset'];
-    $query_simpan = "
-        INSERT INTO penyusutan (id_aset, tahun, nilai_susut, nilai_sisa) 
-        VALUES ('$id_aset', '$tahun_sekarang', '$nilai_susut', '$nilai_sisa')
+// Ambil aset yang belum disusutkan tahun ini (only if not searching)
+if (empty($search_term)) {
+    $query_aset = "
+        SELECT * FROM aset 
+        WHERE id_aset NOT IN (
+            SELECT id_aset FROM penyusutan WHERE tahun = '$tahun_sekarang'
+        )
     ";
-    mysqli_query($conn, $query_simpan);
+    $result_aset = mysqli_query($conn, $query_aset);
+
+    // Simpan otomatis data penyusutan
+    while ($aset = mysqli_fetch_assoc($result_aset)) {
+        if (!isset($aset['masa_manfaat']) || !$aset['masa_manfaat'] || !$aset['tanggal_perolehan'] || !$aset['nilai_awal']) continue;
+
+        $tahun_perolehan = date('Y', strtotime($aset['tanggal_perolehan']));
+        $umur = max(0, $tahun_sekarang - $tahun_perolehan);
+        $masa_manfaat = $aset['masa_manfaat'];
+        $nilai_awal = $aset['nilai_awal'];
+        $nilai_susut = $masa_manfaat > 0 ? $nilai_awal / $masa_manfaat : 0;
+
+        if ($umur >= $masa_manfaat) {
+            $nilai_sisa = 0;
+        } elseif ($umur > 0) {
+            $nilai_sisa = $nilai_awal - ($nilai_susut * $umur);
+        } else {
+            $nilai_sisa = $nilai_awal;
+        }
+
+        $id_aset = $aset['id_aset'];
+        $query_simpan = "
+            INSERT INTO penyusutan (id_aset, tahun, nilai_susut, nilai_sisa) 
+            VALUES ('$id_aset', '$tahun_sekarang', '$nilai_susut', '$nilai_sisa')
+        ";
+        mysqli_query($conn, $query_simpan);
+    }
 }
 
 // Ambil data penyusutan dengan menambahkan tahun perolehan, garansi, dan ruangan
@@ -57,8 +61,27 @@ $query_penyusutan = "
     JOIN kategori k ON a.kategori_id = k.id_kategori
     JOIN lokasi l ON a.lokasi_id = l.id_lokasi
     LEFT JOIN ruangan r ON a.ruangan_id = r.id_ruangan
-    ORDER BY a.tanggal_perolehan DESC, a.nama_aset
+    WHERE 1=1
 ";
+
+// Add search conditions if search term exists
+if (!empty($search_term)) {
+    $query_penyusutan .= "
+        AND (
+            a.nama_aset LIKE '%$search_term%' OR
+            k.nama_kategori LIKE '%$search_term%' OR
+            l.nama_lokasi LIKE '%$search_term%' OR
+            r.nama_ruangan LIKE '%$search_term%' OR
+            a.jenis_garansi LIKE '%$search_term%' OR
+            a.penyedia_garansi LIKE '%$search_term%' OR
+            a.nomor_garansi LIKE '%$search_term%' OR
+            p.tahun LIKE '%$search_term%'
+        )
+    ";
+}
+
+$query_penyusutan .= " ORDER BY a.tanggal_perolehan DESC, a.nama_aset";
+
 $result_penyusutan = mysqli_query($conn, $query_penyusutan);
 
 // Fungsi format Rupiah untuk PHP
@@ -83,10 +106,16 @@ function formatTanggal($date) {
 
     <main>
         <!-- Pencarian -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Cari aset..." class="search-input">
-            <button type="button" onclick="filterTable()" class="btn btn-primary">Cari</button>
-        </div>
+        <form method="GET" action="" class="search-form">
+            <div class="search-container">
+                <input type="text" name="search" id="searchInput" placeholder="Cari aset..." 
+                       value="<?= htmlspecialchars($search_term) ?>" class="search-input">
+                <button type="submit" class="btn btn-primary">Cari</button>
+                <?php if (!empty($search_term)): ?>
+                    <a href="?" class="btn btn-secondary">Reset</a>
+                <?php endif; ?>
+            </div>
+        </form>
 
         <!-- Tabel Daftar Penyusutan -->
         <section class="aset-list">
@@ -110,34 +139,40 @@ function formatTanggal($date) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($penyusutan = mysqli_fetch_assoc($result_penyusutan)) : ?>
-                        <tr>
-                            <td><?= htmlspecialchars($penyusutan['nama_aset']) ?></td>
-                            <td><?= htmlspecialchars($penyusutan['kategori']) ?></td>
-                            <td><?= htmlspecialchars($penyusutan['lokasi']) ?></td>
-                            <td><?= $penyusutan['ruangan'] ? htmlspecialchars($penyusutan['ruangan']) : '-' ?></td>
-                            <td><?= formatTanggal($penyusutan['tanggal_perolehan']) ?></td>
-                            <td><?= formatRupiah($penyusutan['nilai_awal']) ?></td>
-                            <td><?= formatRupiah($penyusutan['nilai_susut']) ?></td>
-                            <td><?= formatRupiah($penyusutan['nilai_sisa']) ?></td>
-                            <td><?= htmlspecialchars($penyusutan['masa_manfaat']) ?> Tahun</td>
-                            <td>
-                                <?php if ($penyusutan['jenis_garansi']): ?>
-                                    <?= ucfirst($penyusutan['jenis_garansi']) ?><br>
-                                    <small><?= $penyusutan['penyedia_garansi'] ?></small>
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?= formatTanggal($penyusutan['garansi_berakhir']) ?>
-                                <?php if ($penyusutan['garansi_berakhir'] && strtotime($penyusutan['garansi_berakhir']) < time()): ?>
-                                    <span class="badge bg-danger">Expired</span>
-                                <?php endif; ?>
-                            </td>
-                            <td><?= date('d-m-Y', strtotime($penyusutan['tahun'].'-01-01')) ?></td>
-                        </tr>
-                        <?php endwhile; ?>
+                        <?php if (mysqli_num_rows($result_penyusutan) > 0): ?>
+                            <?php while ($penyusutan = mysqli_fetch_assoc($result_penyusutan)) : ?>
+                            <tr>
+                                <td><?= htmlspecialchars($penyusutan['nama_aset']) ?></td>
+                                <td><?= htmlspecialchars($penyusutan['kategori']) ?></td>
+                                <td><?= htmlspecialchars($penyusutan['lokasi']) ?></td>
+                                <td><?= $penyusutan['ruangan'] ? htmlspecialchars($penyusutan['ruangan']) : '-' ?></td>
+                                <td><?= formatTanggal($penyusutan['tanggal_perolehan']) ?></td>
+                                <td><?= formatRupiah($penyusutan['nilai_awal']) ?></td>
+                                <td><?= formatRupiah($penyusutan['nilai_susut']) ?></td>
+                                <td><?= formatRupiah($penyusutan['nilai_sisa']) ?></td>
+                                <td><?= htmlspecialchars($penyusutan['masa_manfaat']) ?> Tahun</td>
+                                <td>
+                                    <?php if ($penyusutan['jenis_garansi']): ?>
+                                        <?= ucfirst($penyusutan['jenis_garansi']) ?><br>
+                                        <small><?= $penyusutan['penyedia_garansi'] ?></small>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= formatTanggal($penyusutan['garansi_berakhir']) ?>
+                                    <?php if ($penyusutan['garansi_berakhir'] && strtotime($penyusutan['garansi_berakhir']) < time()): ?>
+                                        <span class="badge bg-danger">Expired</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= date('d-m-Y', strtotime($penyusutan['tahun'].'-01-01')) ?></td>
+                            </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="12">Tidak ada data ditemukan</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -157,25 +192,46 @@ function formatTanggal($date) {
 </div>
 
 <script>
+    // Enable filtering when pressing Enter in search input
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            this.form.submit();
+        }
+    });
+
+    // Client-side filtering for better UX
     function filterTable() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
         const rows = document.querySelectorAll('tbody tr');
+        
+        let hasResults = false;
         
         rows.forEach(row => {
             const cells = row.querySelectorAll('td');
             const match = Array.from(cells).some(cell => 
                 cell.textContent.toLowerCase().includes(searchInput)
             );
-            row.style.display = match ? '' : 'none';
+            
+            if (match) {
+                row.style.display = '';
+                hasResults = true;
+            } else {
+                row.style.display = 'none';
+            }
         });
-    }
-    
-    // Enable filtering when pressing Enter in search input
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            filterTable();
+        
+        // Show "no results" message if needed
+        const noResultsRow = document.querySelector('.no-results');
+        if (!hasResults && !noResultsRow) {
+            const tbody = document.querySelector('tbody');
+            const tr = document.createElement('tr');
+            tr.className = 'no-results';
+            tr.innerHTML = '<td colspan="12">Tidak ada hasil yang cocok</td>';
+            tbody.appendChild(tr);
+        } else if (hasResults && noResultsRow) {
+            noResultsRow.remove();
         }
-    });
+    }
 </script>
 
 <?php include('../include/footer.php'); ?>

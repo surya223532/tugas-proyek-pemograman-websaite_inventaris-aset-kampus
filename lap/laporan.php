@@ -57,6 +57,7 @@ if (!empty($lokasi_filter)) {
 <?php include('../include/header.php'); ?>
 <?php include($_SESSION['role'] === 'admin' ? '../include/sidebar_admin.php' : ($_SESSION['role'] === 'pimpinan' ? '../include/sidebar_pimpinan.php' : '../include/sidebar_staf.php')); ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/laporan.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>

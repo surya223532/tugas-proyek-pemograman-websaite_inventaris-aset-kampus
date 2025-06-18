@@ -1,8 +1,10 @@
 <?php
 session_start();
-include('../include/koneksi.php'); // Koneksi ke database
+include('../include/koneksi.php');
+include('../include/popup_profil.php');
+$allowed_roles = ['admin']; // Only admin can access restore
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles)) {
     header("Location: /siman/login.php");
     exit();
 }
@@ -40,40 +42,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['backup_file'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restore Data</title>
-    <link rel="stylesheet" href="../assets/admin.css">
-</head>
-<body>
-    <div class="main-content">
-        <header>
-            <a href="../adm/admin.php" class="back-btn">Kembali</a>
-        </header>
+<?php include('../include/header.php'); ?>
+<?php include($_SESSION['role'] === 'admin' ? '../include/sidebar_admin.php' : '../include/sidebar_staf.php'); ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/admin.css">
 
-        <main>
-            <section>
-                <h3>🔄 Restore Data</h3>
-                <?php if (!empty($pesan)) : ?>
-                    <div style="margin: 10px 0; padding: 10px; background-color: #eee; border: 1px solid #ccc;">
-                        <?= htmlspecialchars($pesan) ?>
-                    </div>
-                <?php endif; ?>
-                <form action="restore.php" method="POST" enctype="multipart/form-data">
-                    <label>Pilih file backup (.sql):</label><br>
-                    <input type="file" name="backup_file" accept=".sql" required>
-                    <br><br>
-                    <button type="submit">🔁 Restore Sekarang</button>
-                </form>
-            </section>
-        </main>
+<!-- Konten Utama -->
+<div class="main-content">
+    <header>
+        <h2>Restore Database</h2>
+    </header>
 
-        <footer>
-            <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
-        </footer>
-    </div>
-</body>
-</html>
+    <main>
+        <section class="form-section">
+            <h3>🔄 Restore Data</h3>
+            <?php if (!empty($pesan)) : ?>
+                <div class="alert-message">
+                    <?= htmlspecialchars($pesan) ?>
+                </div>
+            <?php endif; ?>
+            
+            <form action="restore.php" method="POST" enctype="multipart/form-data" class="restore-form">
+                <div class="form-group">
+                    <label for="backup_file">Pilih file backup (.sql):</label>
+                    <input type="file" name="backup_file" id="backup_file" accept=".sql" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sync-alt me-2"></i> Restore Sekarang
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <?= date("Y") ?> Sistem Manajemen Aset Kampus</p>
+    </footer>
+</div>
+
+<!-- Kembali Button - Recommended Position -->
+<div class="form-actions text-end mb-4">
+    <button onclick="window.location.href='<?= 
+        ($_SESSION['role'] === 'admin') ? '../adm/admin.php' : 
+        (($_SESSION['role'] === 'pimpinan') ? '../pimpinan/pimpinan.php' : '../staf/staf.php') 
+    ?>'" 
+    class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
+    </button>
+</div>
+
+<?php include('../include/footer.php'); ?>
